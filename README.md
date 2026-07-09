@@ -60,9 +60,10 @@ Po starcie bota, na serwerze:
 1. Utwórz nowy projekt na [Railway](https://railway.app) z tego repozytorium GitHub.
 2. Dodaj **Volume** i zamontuj go np. pod `/data`.
 3. W zakładce **Variables** ustaw: `DISCORD_TOKEN`, `CLIENT_ID`, `GUILD_ID` (lub `DEPLOY_GLOBAL=true`), `DATABASE_PATH=/data/erlc.sqlite`, `LOG_LEVEL=info`.
-4. Deploy — Railway użyje `railway.json` (Nixpacks, `npm start`). Baza migruje się automatycznie przy starcie (`src/index.js` wywołuje `migrate()`).
-5. Jednorazowo zarejestruj slash commands — z lokalnej maszyny (z tym samym `.env`, ale wskazującym na produkcyjnego bota) uruchom `npm run deploy`, albo skorzystaj z poziomu `railway run npm run deploy` (Railway CLI).
-6. Skonfiguruj panele i role komendami z sekcji powyżej.
+4. Deploy — Railway użyje `railway.json` (Nixpacks, `npm start`). Przy każdym starcie bot automatycznie migruje bazę (`migrate()`) **i rejestruje slash commands** (`registerCommands()` w `src/events/ready.js`) — nie trzeba nic uruchamiać ręcznie, komendy pojawią się na serwerze chwilę po tym, jak bot zaloguje się i pokaże online.
+5. Skonfiguruj panele i role komendami z sekcji powyżej.
+
+Rejestracja komend jest idempotentna (nadpisuje cały zestaw), więc restart/redeploy bota jest bezpieczny i nie tworzy duplikatów. `npm run deploy` nadal istnieje jako opcjonalny, samodzielny skrypt CLI — przydatny do rejestracji globalnej (`DEPLOY_GLOBAL=true`, propagacja do godziny) bez restartu bota.
 
 **Uwaga:** filesystem Railway jest efemeryczny przy każdym redeployu — bez zamontowanego Volume dane (dowody, pojazdy, tickety, mandaty itd.) zostaną utracone przy kolejnym wdrożeniu.
 
