@@ -5,12 +5,10 @@ const recordsRepo = require('../database/repositories/criminalRecords.repo');
 const { citizenIdEmbed } = require('../utils/embeds');
 const { postToConfiguredChannel, CONFIG_KEYS } = require('./configService');
 
-function getLinkedRoblox(guildId, discordId) {
-  return robloxRepo.get(guildId, discordId);
-}
-
-function linkRoblox(guildId, discordId, username) {
-  robloxRepo.link(guildId, discordId, username);
+/** Zwraca powiazane konto Roblox tylko jesli zostalo zweryfikowane, w przeciwnym razie null. */
+function getVerifiedRoblox(guildId, discordId) {
+  const row = robloxRepo.get(guildId, discordId);
+  return row?.verified ? row : null;
 }
 
 function getActiveCitizen(guildId, discordId) {
@@ -19,7 +17,7 @@ function getActiveCitizen(guildId, discordId) {
 
 async function createCitizen(guild, discordId, data) {
   const citizen = citizensRepo.createOrReplace(guild.id, discordId, data);
-  const roblox = getLinkedRoblox(guild.id, discordId);
+  const roblox = getVerifiedRoblox(guild.id, discordId);
   const embed = citizenIdEmbed(citizen, discordId, roblox?.roblox_username);
   await postToConfiguredChannel(guild, 'citizen_log_channel_id', { embeds: [embed] });
   return citizen;
@@ -35,8 +33,7 @@ function getCitizenSummary(guildId, discordId) {
 }
 
 module.exports = {
-  getLinkedRoblox,
-  linkRoblox,
+  getVerifiedRoblox,
   getActiveCitizen,
   createCitizen,
   getCitizenSummary,

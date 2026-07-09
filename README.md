@@ -3,6 +3,7 @@
 Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). Zawiera:
 
 - 🏛️ **Panel Obywatela** — dowody osobiste, rejestracja pojazdów, podgląd własnych danych (select menu + modale).
+- 🔗 **Weryfikacja konta Roblox** — przed wyrobieniem dowodu bot sprawdza w Roblox API, czy podana nazwa istnieje, pokazuje dane konta (avatar, nick) i wymaga wklejenia losowego kodu w opisie profilu, zanim uzna konto za powiązane.
 - 🎫 **Zaawansowany system ticketów** — select menu z 6 kategoriami, prywatne kanały, claim/close/reopen/delete, transkrypty HTML+TXT.
 - 💰 **Mandaty i rejestr karny** powiązane z dowodem osobistym.
 - 🛡️ **System frakcji/prac** (LSPD, LSFD, DOT itd.) — rangi, awanse/degradacje, panel zarządzania członkami.

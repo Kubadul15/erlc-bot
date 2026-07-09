@@ -21,6 +21,27 @@ function robloxProfileLink(username) {
   return `[${username}](https://www.roblox.com/search/users?keyword=${encoded})`;
 }
 
+function robloxLinkCardEmbed({ resolved, avatarUrl, code, verified }) {
+  const fields = [
+    { name: 'Nazwa użytkownika', value: resolved.name, inline: true },
+    { name: 'Nazwa wyświetlana', value: resolved.displayName || resolved.name, inline: true },
+  ];
+
+  const description = verified
+    ? `${EMOJI.success} Konto zweryfikowane pomyślnie. Możesz kontynuować.`
+    : `Aby potwierdzić, że to Twoje konto, wklej poniższy kod do sekcji **"O mnie"** na swoim profilu Roblox, zapisz zmiany, a następnie kliknij **Sprawdź ponownie**.\n\n` +
+      `Kod weryfikacyjny:\n\`\`\`${code}\`\`\`\n` +
+      `Po weryfikacji możesz go usunąć z opisu.`;
+
+  return brandEmbed({
+    title: '🔗 Powiązanie konta Roblox',
+    description,
+    color: verified ? require('../config/constants').EMBED_COLOR_SUCCESS : undefined,
+    fields,
+    thumbnail: avatarUrl || undefined,
+  });
+}
+
 function citizenIdEmbed(citizen, discordId, robloxUsername) {
   return brandEmbed({
     title: `${EMOJI.id} Dowód Osobisty — ${BRAND_NAME}`,
@@ -131,6 +152,7 @@ function successEmbed(message) {
 module.exports = {
   brandEmbed,
   robloxProfileLink,
+  robloxLinkCardEmbed,
   citizenIdEmbed,
   vehicleEmbed,
   ticketIntroEmbed,

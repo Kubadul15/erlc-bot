@@ -2,6 +2,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { startsWith, build } = require('../../utils/customId');
 const citizenService = require('../../services/citizenService');
 const vehicleService = require('../../services/vehicleService');
+const robloxLinkService = require('../../services/robloxLinkService');
 const { citizenIdEmbed, vehicleEmbed, errorEmbed, brandEmbed } = require('../../utils/embeds');
 const { EMOJI } = require('../../config/constants');
 const { showIdModal, showVehicleModal } = require('../../services/citizenModals');
@@ -12,7 +13,8 @@ module.exports = {
     const choice = interaction.values[0];
 
     if (choice === 'id') {
-      const roblox = citizenService.getLinkedRoblox(interaction.guildId, interaction.user.id);
+      const roblox = robloxLinkService.getLinkedAccount(interaction.guildId, interaction.user.id);
+
       if (!roblox) {
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
@@ -25,7 +27,7 @@ module.exports = {
           embeds: [
             brandEmbed({
               description:
-                `${EMOJI.info} Zanim wyrobisz dowód, musisz powiązać swoją nazwę użytkownika Roblox.\n` +
+                `${EMOJI.info} Zanim wyrobisz dowód, musisz powiązać i zweryfikować swoją nazwę użytkownika Roblox.\n` +
                 `Kliknij przycisk poniżej albo użyj komendy \`/link-roblox\`.`,
             }),
           ],
@@ -34,6 +36,34 @@ module.exports = {
         });
         return;
       }
+
+      if (!roblox.verified) {
+        const row = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId(build('citizen', 'link', 'verify'))
+            .setLabel('Sprawdź ponownie')
+            .setStyle(ButtonStyle.Success)
+            .setEmoji('🔄'),
+          new ButtonBuilder()
+            .setCustomId(build('citizen', 'link', 'continue'))
+            .setLabel('Zacznij od nowa')
+            .setStyle(ButtonStyle.Secondary)
+        );
+        await interaction.reply({
+          embeds: [
+            brandEmbed({
+              title: '🔗 Dokończ powiązanie konta Roblox',
+              description:
+                `Rozpocząłeś już powiązanie konta **${roblox.roblox_username}**, ale nie zostało ono jeszcze zweryfikowane.\n\n` +
+                `Wklej ten kod do sekcji **"O mnie"** na Robloxie, zapisz zmiany i kliknij **Sprawdź ponownie**:\n\`\`\`${roblox.verification_code}\`\`\``,
+            }),
+          ],
+          components: [row],
+          ephemeral: true,
+        });
+        return;
+      }
+
       await showIdModal(interaction);
       return;
     }
@@ -57,7 +87,7 @@ module.exports = {
         await interaction.reply({ embeds: [errorEmbed('Nie posiadasz dowodu osobistego.')], ephemeral: true });
         return;
       }
-      const roblox = citizenService.getLinkedRoblox(interaction.guildId, interaction.user.id);
+      const roblox = citizenService.getVerifiedRoblox(interaction.guildId, interaction.user.id);
       const idEmbed = citizenIdEmbed(summary.citizen, interaction.user.id, roblox?.roblox_username);
       idEmbed.addFields(
         { name: '💰 Nieopłacone mandaty', value: `$${summary.unpaidTotal} (${summary.fines.length} łącznie)`, inline: true },
