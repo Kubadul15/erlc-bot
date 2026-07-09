@@ -19,7 +19,7 @@ async function createCitizen(guild, discordId, data) {
   const citizen = citizensRepo.createOrReplace(guild.id, discordId, data);
   const roblox = getVerifiedRoblox(guild.id, discordId);
   const embed = citizenIdEmbed(citizen, discordId, roblox?.roblox_username);
-  await postToConfiguredChannel(guild, 'citizen_log_channel_id', { embeds: [embed] });
+  await postToConfiguredChannel(guild, 'citizen_log_channel_id', { embeds: [embed] }, 'citizen_panel_channel_id');
   return citizen;
 }
 

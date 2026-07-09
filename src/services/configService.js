@@ -33,8 +33,11 @@ function getRoleId(guildId, key) {
   return guildSettings.get(guildId, key);
 }
 
-async function getConfiguredChannel(guild, key) {
-  const channelId = getChannelId(guild.id, key);
+async function getConfiguredChannel(guild, key, fallbackKey) {
+  let channelId = getChannelId(guild.id, key);
+  if (!channelId && fallbackKey) {
+    channelId = getChannelId(guild.id, fallbackKey);
+  }
   if (!channelId) return null;
   try {
     return await guild.channels.fetch(channelId);
@@ -44,8 +47,9 @@ async function getConfiguredChannel(guild, key) {
   }
 }
 
-async function postToConfiguredChannel(guild, key, payload) {
-  const channel = await getConfiguredChannel(guild, key);
+/** fallbackKey pozwala nie "gubic" wiadomosci, gdy dedykowany kanal logow nie zostal jeszcze skonfigurowany. */
+async function postToConfiguredChannel(guild, key, payload, fallbackKey) {
+  const channel = await getConfiguredChannel(guild, key, fallbackKey);
   if (!channel) return null;
   return channel.send(payload);
 }

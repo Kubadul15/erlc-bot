@@ -114,18 +114,6 @@ function modActionEmbed({ action, targetId, staffId, reason, durationLabel }) {
   });
 }
 
-function applicationReviewEmbed({ type, applicantId, answers, factionName }) {
-  const fields = Object.entries(answers)
-    .filter(([, v]) => v)
-    .map(([name, value]) => ({ name, value: String(value).slice(0, 1024) }));
-
-  return brandEmbed({
-    title: `${EMOJI.application} Nowa aplikacja: ${type === 'faction' ? factionName : 'Staff'}`,
-    description: `> Aplikujący: <@${applicantId}>`,
-    fields,
-  });
-}
-
 function factionPanelEmbed(faction, members, ranks) {
   const rankNameById = new Map(ranks.map((r) => [r.id, r.name]));
   const memberLines = members.length
@@ -157,7 +145,6 @@ module.exports = {
   vehicleEmbed,
   ticketIntroEmbed,
   modActionEmbed,
-  applicationReviewEmbed,
   factionPanelEmbed,
   errorEmbed,
   successEmbed,

@@ -8,7 +8,7 @@ Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). 
 - 💰 **Mandaty i rejestr karny** powiązane z dowodem osobistym.
 - 🛡️ **System frakcji/prac** (LSPD, LSFD, DOT itd.) — rangi, awanse/degradacje, panel zarządzania członkami.
 - ⚖️ **Panel moderacji** — warn/mute/unmute/ban/unban/kick z historią (`/modlog`).
-- 📋 **System aplikacji/rekrutacji** — do staffu i do frakcji, z akceptacją/odrzuceniem przez przyciski.
+- 📋 **System aplikacji/rekrutacji** — do staffu i do frakcji, z nowoczesnym interfejsem kart (Discord Components V2: kontenery, separatory, miniaturka avatara), akceptacją/odrzuceniem przez przyciski i kartami decyzji na DM.
 
 Stack: **Node.js + discord.js v14 + better-sqlite3**.
 

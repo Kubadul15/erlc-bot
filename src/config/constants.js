@@ -41,4 +41,11 @@ module.exports = {
   },
 
   MAX_TIMEOUT_MS: 28 * 24 * 60 * 60 * 1000, // 28 dni - limit natywnego timeoutu Discorda
+
+  DIVIDER: '◢▰▰▰▰▰▰▰ • ▰▰▰▰▰▰▰◣',
+
+  APPLICATION_TYPE_LABELS: {
+    staff: 'Staff',
+    faction: 'Frakcja',
+  },
 };

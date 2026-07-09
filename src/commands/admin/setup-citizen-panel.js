@@ -20,6 +20,20 @@ module.exports = {
         .setDescription('Kanał, na którym opublikować panel (domyślnie bieżący)')
         .addChannelTypes(ChannelType.GuildText)
         .setRequired(false)
+    )
+    .addChannelOption((opt) =>
+      opt
+        .setName('log_channel')
+        .setDescription('Kanał, na który trafiają utworzone dowody osobiste (domyślnie ten sam co panel)')
+        .addChannelTypes(ChannelType.GuildText)
+        .setRequired(false)
+    )
+    .addChannelOption((opt) =>
+      opt
+        .setName('vehicle_log_channel')
+        .setDescription('Kanał, na który trafiają zarejestrowane pojazdy (domyślnie ten sam co panel)')
+        .addChannelTypes(ChannelType.GuildText)
+        .setRequired(false)
     ),
   async execute(interaction) {
     if (!isAdmin(interaction.member)) {
@@ -28,6 +42,8 @@ module.exports = {
     }
 
     const channel = interaction.options.getChannel('channel') || interaction.channel;
+    const logChannel = interaction.options.getChannel('log_channel');
+    const vehicleLogChannel = interaction.options.getChannel('vehicle_log_channel');
 
     const embed = brandEmbed({
       title: `🏛️ Panel Obywatela — ${BRAND_NAME}`,
@@ -54,9 +70,19 @@ module.exports = {
     await channel.send({ embeds: [embed], components: [row] });
 
     guildSettings.set(interaction.guildId, 'citizen_panel_channel_id', channel.id);
+    guildSettings.set(interaction.guildId, 'citizen_log_channel_id', (logChannel || channel).id);
+    guildSettings.set(interaction.guildId, 'vehicle_log_channel_id', (vehicleLogChannel || channel).id);
 
     await interaction.reply({
-      embeds: [brandEmbed({ description: `${EMOJI.success} Panel Obywatela opublikowany na <#${channel.id}>.` })],
+      embeds: [
+        brandEmbed({
+          description:
+            `${EMOJI.success} Panel Obywatela opublikowany na <#${channel.id}>.\n` +
+            `🪪 Utworzone dowody będą trafiać na <#${(logChannel || channel).id}>.\n` +
+            `🚓 Zarejestrowane pojazdy będą trafiać na <#${(vehicleLogChannel || channel).id}>.\n\n` +
+            `Możesz to później zmienić przez \`/config set-channel\`.`,
+        }),
+      ],
       ephemeral: true,
     });
   },

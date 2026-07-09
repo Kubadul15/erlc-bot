@@ -1,15 +1,16 @@
+const { MessageFlags } = require('discord.js');
 const { startsWith } = require('../../utils/customId');
 const { readApplicationAnswers } = require('../../services/applicationModals');
 const applicationService = require('../../services/applicationService');
 const factionService = require('../../services/factionService');
-const { successEmbed, errorEmbed } = require('../../utils/embeds');
+const { errorEmbed } = require('../../utils/embeds');
 
 module.exports = {
   match: (customId) => startsWith(customId, 'app', 'modal'),
   async execute(interaction, parts) {
     const type = parts[2]; // staff | faction
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const answers = readApplicationAnswers(interaction, type);
 
@@ -23,8 +24,8 @@ module.exports = {
       }
     }
 
-    await applicationService.submitApplication(interaction.guild, type, interaction.user, answers, faction);
+    const { confirmationCard } = await applicationService.submitApplication(interaction.guild, type, interaction.user, answers, faction);
 
-    await interaction.editReply({ embeds: [successEmbed('Twoja aplikacja została wysłana. Poczekaj na decyzję staffu.')] });
+    await interaction.editReply(confirmationCard);
   },
 };
