@@ -1,1 +1,97 @@
-# erlc-bot
+# Vortex ERLC — Bot Discord
+
+Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). Zawiera:
+
+- 🏛️ **Panel Obywatela** — dowody osobiste, rejestracja pojazdów, podgląd własnych danych (select menu + modale).
+- 🎫 **Zaawansowany system ticketów** — select menu z 6 kategoriami, prywatne kanały, claim/close/reopen/delete, transkrypty HTML+TXT.
+- 💰 **Mandaty i rejestr karny** powiązane z dowodem osobistym.
+- 🛡️ **System frakcji/prac** (LSPD, LSFD, DOT itd.) — rangi, awanse/degradacje, panel zarządzania członkami.
+- ⚖️ **Panel moderacji** — warn/mute/unmute/ban/unban/kick z historią (`/modlog`).
+- 📋 **System aplikacji/rekrutacji** — do staffu i do frakcji, z akceptacją/odrzuceniem przez przyciski.
+
+Stack: **Node.js + discord.js v14 + better-sqlite3**.
+
+## Wymagania
+
+- Node.js 18+
+- Aplikacja Discord z botem (Discord Developer Portal)
+
+## Konfiguracja aplikacji Discord
+
+1. Utwórz aplikację na https://discord.com/developers/applications, dodaj do niej bota.
+2. W zakładce **Bot** włącz:
+   - `Server Members Intent`
+   - `Message Content Intent`
+3. Wygeneruj link zaproszenia (OAuth2 → URL Generator):
+   - Scopes: `bot`, `applications.commands`
+   - Permissions: Manage Channels, Manage Roles, Send Messages, Embed Links, Attach Files, Read Message History, Moderate Members, Ban Members, Kick Members
+4. Zaproś bota na serwer i upewnij się, że **rola bota jest wyżej** niż role frakcji/rang, które ma nadawać.
+
+## Instalacja lokalna
+
+```bash
+npm install
+cp .env.example .env
+# uzupełnij DISCORD_TOKEN, CLIENT_ID, GUILD_ID w .env
+npm run migrate
+npm run deploy   # rejestruje slash commands na serwerze GUILD_ID
+npm start
+```
+
+Po starcie bota, na serwerze:
+
+1. `/setup-citizen-panel` — publikuje Panel Obywatela.
+2. `/setup-ticket-panel` — publikuje panel ticketów.
+3. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**.
+
+## Zmienne środowiskowe
+
+| Zmienna | Opis |
+|---|---|
+| `DISCORD_TOKEN` | Token bota z Developer Portal |
+| `CLIENT_ID` | ID aplikacji Discord |
+| `GUILD_ID` | ID serwera deweloperskiego (rejestracja komend guild-scoped) |
+| `DEPLOY_GLOBAL` | `true`/`false` — rejestracja komend globalnie zamiast na `GUILD_ID` |
+| `DATABASE_PATH` | Ścieżka do pliku SQLite (lokalnie `./data/erlc.sqlite`) |
+| `LOG_LEVEL` | `error` \| `warn` \| `info` \| `debug` |
+
+## Deployment na Railway
+
+1. Utwórz nowy projekt na [Railway](https://railway.app) z tego repozytorium GitHub.
+2. Dodaj **Volume** i zamontuj go np. pod `/data`.
+3. W zakładce **Variables** ustaw: `DISCORD_TOKEN`, `CLIENT_ID`, `GUILD_ID` (lub `DEPLOY_GLOBAL=true`), `DATABASE_PATH=/data/erlc.sqlite`, `LOG_LEVEL=info`.
+4. Deploy — Railway użyje `railway.json` (Nixpacks, `npm start`). Baza migruje się automatycznie przy starcie (`src/index.js` wywołuje `migrate()`).
+5. Jednorazowo zarejestruj slash commands — z lokalnej maszyny (z tym samym `.env`, ale wskazującym na produkcyjnego bota) uruchom `npm run deploy`, albo skorzystaj z poziomu `railway run npm run deploy` (Railway CLI).
+6. Skonfiguruj panele i role komendami z sekcji powyżej.
+
+**Uwaga:** filesystem Railway jest efemeryczny przy każdym redeployu — bez zamontowanego Volume dane (dowody, pojazdy, tickety, mandaty itd.) zostaną utracone przy kolejnym wdrożeniu.
+
+## Struktura projektu
+
+```
+src/
+  index.js               # bootstrap klienta, ładowanie komend/interakcji/eventów
+  deploy-commands.js     # rejestracja slash commands
+  config/                # env, stałe marki, definicje pól modali
+  database/               # połączenie SQLite, migracje, repozytoria
+  services/               # logika biznesowa (citizen, vehicle, ticket, faction, moderation, application...)
+  commands/                # slash commands, pogrupowane wg kategorii
+  interactions/            # handlery przycisków / select menu / modali
+  events/                  # eventy klienta discord.js
+  utils/                   # embedy, uprawnienia, customId, czas, logger
+```
+
+## Komendy
+
+| Komenda | Opis |
+|---|---|
+| `/link-roblox` | Powiąż nazwę użytkownika Roblox |
+| `/setup-citizen-panel` | Publikuje Panel Obywatela |
+| `/setup-ticket-panel` | Publikuje panel ticketów |
+| `/config set-channel / set-role / view` | Konfiguracja bota |
+| `/mandat`, `/rekord` | Mandaty i rejestr karny |
+| `/warn`, `/mute`, `/unmute`, `/ban`, `/unban`, `/kick`, `/modlog` | Moderacja |
+| `/frakcja create/delete/info/ranga/czlonek` | Zarządzanie frakcjami |
+| `/frakcja-panel` | Panel zarządzania członkami frakcji |
+| `/aplikacja-staff`, `/aplikacja-frakcja` | Aplikacje/rekrutacja |
+| `/ping`, `/help` | Ogólne |
