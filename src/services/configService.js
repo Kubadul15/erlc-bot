@@ -10,6 +10,7 @@ const CONFIG_KEYS = {
     ticket_parent_category_id: 'Kategoria kanałów ticketów',
     ticket_transcript_channel_id: 'Kanał transkryptów ticketów',
     mod_log_channel_id: 'Kanał logów moderacji',
+    application_panel_channel_id: 'Kanał Centrum Rekrutacji',
     application_log_channel_id: 'Kanał logów aplikacji staff',
   },
   roles: {

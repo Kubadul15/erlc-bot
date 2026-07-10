@@ -19,7 +19,8 @@ module.exports = {
         },
         {
           name: '📋 Aplikacje',
-          value: '`/aplikacja-staff` — aplikuj do staffu\n`/aplikacja-frakcja` — aplikuj do frakcji',
+          value:
+            'Użyj Centrum Rekrutacji na kanale (wybierz Staff/Frakcja z select menu), albo bezpośrednio: `/aplikacja-staff`, `/aplikacja-frakcja`.',
         },
         {
           name: '🛡️ Staff',
@@ -28,7 +29,7 @@ module.exports = {
         },
         {
           name: '⚙️ Administracja',
-          value: '`/config`, `/setup-citizen-panel`, `/setup-ticket-panel`',
+          value: '`/config`, `/setup-citizen-panel`, `/setup-ticket-panel`, `/setup-application-panel`',
         },
       ],
     });

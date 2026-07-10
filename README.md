@@ -43,7 +43,8 @@ Po starcie bota, na serwerze:
 
 1. `/setup-citizen-panel` — publikuje Panel Obywatela.
 2. `/setup-ticket-panel` — publikuje panel ticketów.
-3. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**.
+3. `/setup-application-panel` — publikuje Centrum Rekrutacji (select menu Staff/Frakcja, klik → dopiero wtedy otwiera się formularz).
+4. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**.
 
 ## Zmienne środowiskowe
 
@@ -90,6 +91,7 @@ src/
 | `/link-roblox` | Powiąż nazwę użytkownika Roblox |
 | `/setup-citizen-panel` | Publikuje Panel Obywatela |
 | `/setup-ticket-panel` | Publikuje panel ticketów |
+| `/setup-application-panel` | Publikuje Centrum Rekrutacji |
 | `/config set-channel / set-role / view` | Konfiguracja bota |
 | `/mandat`, `/rekord` | Mandaty i rejestr karny |
 | `/warn`, `/mute`, `/unmute`, `/ban`, `/unban`, `/kick`, `/modlog` | Moderacja |
