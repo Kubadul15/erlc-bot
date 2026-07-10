@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, UserSelectMenuBuilder } = require('discord.js');
-const { divider, textDisplay, footerText, headerSection, mediaGallery, baseContainer, cardPayload } = require('./cardKit');
+const { divider, textDisplay, footerText, headerSection, mediaGallery, baseContainer, cardPayload, parseHexColor } = require('./cardKit');
 const { robloxProfileLink } = require('./embeds');
 const { build } = require('./customId');
 const {
@@ -230,9 +230,9 @@ function factionPanelCard({ faction, members, ranks }) {
     ? members.map((m) => `<@${m.discord_id}> — **${rankNameById.get(m.rank_id) || '?'}**`).join('\n')
     : 'Brak członków.';
 
-  const container = baseContainer(EMBED_COLOR)
+  const container = baseContainer(parseHexColor(faction.color, EMBED_COLOR))
     .addTextDisplayComponents(
-      textDisplay(`## ${EMOJI.faction} ${faction.name}${faction.short_name ? ` (${faction.short_name})` : ''}`),
+      textDisplay(`## ${faction.emoji || EMOJI.faction} ${faction.name}${faction.short_name ? ` (${faction.short_name})` : ''}`),
       textDisplay('Wybierz członka poniżej, aby zarządzać jego rangą.')
     )
     .addSeparatorComponents(divider())
@@ -251,8 +251,15 @@ function factionPanelCard({ faction, members, ranks }) {
 function factionInfoCard({ faction, ranks, members }) {
   const rankList = ranks.map((r) => `• ${r.name} (poziom ${r.level})${r.role_id ? ` — <@&${r.role_id}>` : ''}`).join('\n') || 'Brak rang.';
 
-  const container = baseContainer(EMBED_COLOR)
-    .addTextDisplayComponents(textDisplay(`## 🛡️ ${faction.name}${faction.short_name ? ` (${faction.short_name})` : ''}`))
+  const container = baseContainer(parseHexColor(faction.color, EMBED_COLOR)).addTextDisplayComponents(
+    textDisplay(`## ${faction.emoji || '🛡️'} ${faction.name}${faction.short_name ? ` (${faction.short_name})` : ''}`)
+  );
+
+  if (faction.description) {
+    container.addTextDisplayComponents(textDisplay(faction.description));
+  }
+
+  container
     .addSeparatorComponents(divider())
     .addTextDisplayComponents(
       textDisplay(`🎖️ **Rola bazowa:** ${faction.role_id ? `<@&${faction.role_id}>` : 'brak'}`),

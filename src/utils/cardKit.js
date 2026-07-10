@@ -52,4 +52,11 @@ function cardPayload(containers) {
   return { flags: MessageFlags.IsComponentsV2, components: Array.isArray(containers) ? containers : [containers] };
 }
 
-module.exports = { divider, textDisplay, footerText, headerSection, mediaGallery, baseContainer, cardPayload, DIVIDER };
+/** Parsuje kolor zapisany jako "#rrggbb" (tak trzymamy faction.color w bazie) na liczbe dla setAccentColor. */
+function parseHexColor(hex, fallback) {
+  if (!hex) return fallback;
+  const parsed = Number.parseInt(hex.replace('#', ''), 16);
+  return Number.isNaN(parsed) ? fallback : parsed;
+}
+
+module.exports = { divider, textDisplay, footerText, headerSection, mediaGallery, baseContainer, cardPayload, parseHexColor, DIVIDER };

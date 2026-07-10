@@ -49,4 +49,42 @@ module.exports = {
     staff: 'Staff',
     faction: 'Frakcja',
   },
+
+  FACTION_PRESETS: [
+    {
+      name: 'Policja',
+      shortName: 'POL',
+      emoji: '👮',
+      color: '#3498db',
+      description: 'Utrzymanie porządku publicznego, interwencje i ściganie przestępców.',
+    },
+    {
+      name: 'Straż Pożarna',
+      shortName: 'SP',
+      emoji: '🚒',
+      color: '#e74c3c',
+      description: 'Gaszenie pożarów, ratownictwo techniczne i usuwanie zagrożeń.',
+    },
+    {
+      name: 'Straż Miejska',
+      shortName: 'SM',
+      emoji: '🚓',
+      color: '#f1c40f',
+      description: 'Nadzór nad porządkiem publicznym i przepisami lokalnymi.',
+    },
+    {
+      name: 'GDDKiA',
+      shortName: 'GDDKiA',
+      emoji: '🚧',
+      color: '#e67e22',
+      description: 'Budowa, utrzymanie i zabezpieczanie infrastruktury drogowej.',
+    },
+    {
+      name: 'Pogotowie Ratunkowe',
+      shortName: 'PR',
+      emoji: '🚑',
+      color: '#2ecc71',
+      description: 'Pomoc medyczna, ratownictwo i transport poszkodowanych.',
+    },
+  ],
 };

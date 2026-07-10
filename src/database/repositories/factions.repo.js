@@ -1,10 +1,11 @@
 const db = require('../db');
 
 const insertStmt = db.prepare(`
-  INSERT INTO factions (guild_id, name, short_name, color, role_id, management_role_id, review_channel_id, created_at)
-  VALUES (@guildId, @name, @shortName, @color, @roleId, @managementRoleId, @reviewChannelId, @now)
+  INSERT INTO factions (guild_id, name, short_name, color, role_id, management_role_id, review_channel_id, description, emoji, created_at)
+  VALUES (@guildId, @name, @shortName, @color, @roleId, @managementRoleId, @reviewChannelId, @description, @emoji, @now)
 `);
 const getByIdStmt = db.prepare('SELECT * FROM factions WHERE id = ?');
+const getByNameStmt = db.prepare('SELECT * FROM factions WHERE guild_id = ? AND name = ? COLLATE NOCASE');
 const listByGuildStmt = db.prepare('SELECT * FROM factions WHERE guild_id = ? ORDER BY name');
 const deleteStmt = db.prepare('DELETE FROM factions WHERE id = ?');
 const updateStmt = db.prepare(`
@@ -14,7 +15,9 @@ const updateStmt = db.prepare(`
     color = COALESCE(@color, color),
     role_id = COALESCE(@roleId, role_id),
     management_role_id = COALESCE(@managementRoleId, management_role_id),
-    review_channel_id = COALESCE(@reviewChannelId, review_channel_id)
+    review_channel_id = COALESCE(@reviewChannelId, review_channel_id),
+    description = COALESCE(@description, description),
+    emoji = COALESCE(@emoji, emoji)
   WHERE id = @id
 `);
 
@@ -27,6 +30,8 @@ function create(guildId, data) {
     roleId: data.roleId || null,
     managementRoleId: data.managementRoleId || null,
     reviewChannelId: data.reviewChannelId || null,
+    description: data.description || null,
+    emoji: data.emoji || null,
     now: Date.now(),
   });
   return info.lastInsertRowid;
@@ -34,6 +39,10 @@ function create(guildId, data) {
 
 function getById(id) {
   return getByIdStmt.get(id) || null;
+}
+
+function getByName(guildId, name) {
+  return getByNameStmt.get(guildId, name) || null;
 }
 
 function listByGuild(guildId) {
@@ -53,7 +62,9 @@ function update(id, data) {
     roleId: data.roleId ?? null,
     managementRoleId: data.managementRoleId ?? null,
     reviewChannelId: data.reviewChannelId ?? null,
+    description: data.description ?? null,
+    emoji: data.emoji ?? null,
   });
 }
 
-module.exports = { create, getById, listByGuild, remove, update };
+module.exports = { create, getById, getByName, listByGuild, remove, update };

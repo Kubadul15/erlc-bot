@@ -18,6 +18,10 @@ module.exports = {
           value: 'Użyj panelu ticketów, aby otworzyć zgłoszenie w wybranej kategorii.',
         },
         {
+          name: '🛡️ Frakcje',
+          value: 'Użyj Panelu Frakcji na kanale, aby zobaczyć informacje o Policji, Straży Pożarnej, Straży Miejskiej, GDDKiA i Pogotowiu Ratunkowym.',
+        },
+        {
           name: '📋 Aplikacje',
           value:
             'Użyj Centrum Rekrutacji na kanale (wybierz Staff/Frakcja z select menu), albo bezpośrednio: `/aplikacja-staff`, `/aplikacja-frakcja`.',
@@ -29,7 +33,7 @@ module.exports = {
         },
         {
           name: '⚙️ Administracja',
-          value: '`/config`, `/setup-citizen-panel`, `/setup-ticket-panel`, `/setup-application-panel`',
+          value: '`/config`, `/setup-citizen-panel`, `/setup-ticket-panel`, `/setup-application-panel`, `/setup-faction-panel`',
         },
       ],
     });

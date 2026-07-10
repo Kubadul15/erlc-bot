@@ -34,6 +34,8 @@ module.exports = {
         .addRoleOption((o) => o.setName('role').setDescription('Rola nadawana wszystkim członkom').setRequired(false))
         .addRoleOption((o) => o.setName('management_role').setDescription('Rola dowódcza (awanse/degradacje)').setRequired(false))
         .addStringOption((o) => o.setName('color').setDescription('Kolor hex, np. #1abc9c').setRequired(false))
+        .addStringOption((o) => o.setName('emoji').setDescription('Emoji frakcji, np. 👮').setRequired(false).setMaxLength(10))
+        .addStringOption((o) => o.setName('description').setDescription('Krótki opis frakcji').setRequired(false).setMaxLength(200))
     )
     .addSubcommand((sub) =>
       sub
@@ -117,6 +119,8 @@ module.exports = {
       const role = interaction.options.getRole('role');
       const managementRole = interaction.options.getRole('management_role');
       const color = interaction.options.getString('color');
+      const emoji = interaction.options.getString('emoji');
+      const description = interaction.options.getString('description');
 
       factionService.createFaction(interaction.guildId, {
         name,
@@ -124,6 +128,8 @@ module.exports = {
         color,
         roleId: role?.id,
         managementRoleId: managementRole?.id,
+        emoji,
+        description,
       });
 
       await interaction.reply({ embeds: [successEmbed(`Utworzono frakcję **${name}** z domyślną rangą "Rekrut".`)] });

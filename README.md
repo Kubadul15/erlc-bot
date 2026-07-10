@@ -6,7 +6,7 @@ Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). 
 - 🔗 **Weryfikacja konta Roblox** — przed wyrobieniem dowodu bot sprawdza w Roblox API, czy podana nazwa istnieje, pokazuje dane konta (avatar, nick) i wymaga wklejenia losowego kodu w opisie profilu, zanim uzna konto za powiązane.
 - 🎫 **Zaawansowany system ticketów** — select menu z 6 kategoriami, prywatne kanały, claim/close/reopen/delete, transkrypty HTML+TXT.
 - 💰 **Mandaty i rejestr karny** powiązane z dowodem osobistym.
-- 🛡️ **System frakcji/prac** (Policja, Straż Pożarna, Pogotowie itd. — nazwy w pełni dowolne, ustawiane przez admina) — rangi, awanse/degradacje, panel zarządzania członkami (karta z osadzonym select menu).
+- 🛡️ **System frakcji/prac** — domyślnie Policja, Straż Pożarna, Straż Miejska, GDDKiA, Pogotowie Ratunkowe (`/setup-faction-panel` zasiewa je automatycznie), plus dowolne własne frakcje. Publiczny **Panel Frakcji** do przeglądania, osobny panel zarządzania członkami (rangi, awanse/degradacje) dla dowódców.
 - ⚖️ **Panel moderacji** — warn/mute/unmute/ban/unban/kick z historią (`/modlog`).
 - 📋 **System aplikacji/rekrutacji** — Centrum Rekrutacji (select menu, publikowane komendą admina) do staffu i frakcji, karty decyzji na DM, akceptacja/odrzucenie przez przyciski.
 
@@ -44,7 +44,8 @@ Po starcie bota, na serwerze:
 1. `/setup-citizen-panel` — publikuje Panel Obywatela.
 2. `/setup-ticket-panel` — publikuje panel ticketów.
 3. `/setup-application-panel` — publikuje Centrum Rekrutacji (select menu Staff/Frakcja, klik → dopiero wtedy otwiera się formularz).
-4. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**.
+4. `/setup-faction-panel` — zasiewa domyślne frakcje (Policja, Straż Pożarna, Straż Miejska, GDDKiA, Pogotowie Ratunkowe) i publikuje publiczny Panel Frakcji.
+5. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**.
 
 ## Zmienne środowiskowe
 
@@ -92,6 +93,7 @@ src/
 | `/setup-citizen-panel` | Publikuje Panel Obywatela |
 | `/setup-ticket-panel` | Publikuje panel ticketów |
 | `/setup-application-panel` | Publikuje Centrum Rekrutacji |
+| `/setup-faction-panel` | Zasiewa domyślne frakcje i publikuje Panel Frakcji |
 | `/config set-channel / set-role / view` | Konfiguracja bota |
 | `/mandat`, `/rekord` | Mandaty i rejestr karny |
 | `/warn`, `/mute`, `/unmute`, `/ban`, `/unban`, `/kick`, `/modlog` | Moderacja |

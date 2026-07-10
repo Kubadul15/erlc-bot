@@ -22,6 +22,18 @@ function createFaction(guildId, data) {
   return { factionId, defaultRankId };
 }
 
+function getFactionByName(guildId, name) {
+  return factionsRepo.getByName(guildId, name);
+}
+
+/** Tworzy frakcje tylko jesli nie istnieje juz frakcja o tej nazwie (case-insensitive). Zwraca {created: bool, faction}. */
+function getOrCreateFaction(guildId, data) {
+  const existing = factionsRepo.getByName(guildId, data.name);
+  if (existing) return { created: false, faction: existing };
+  const { factionId } = createFaction(guildId, data);
+  return { created: true, faction: factionsRepo.getById(factionId) };
+}
+
 function deleteFaction(factionId) {
   factionsRepo.remove(factionId);
 }
@@ -86,6 +98,8 @@ function listFactions(guildId) {
 
 module.exports = {
   createFaction,
+  getOrCreateFaction,
+  getFactionByName,
   deleteFaction,
   addMember,
   removeMember,
