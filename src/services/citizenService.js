@@ -2,7 +2,7 @@ const citizensRepo = require('../database/repositories/citizens.repo');
 const robloxRepo = require('../database/repositories/robloxAccounts.repo');
 const finesRepo = require('../database/repositories/fines.repo');
 const recordsRepo = require('../database/repositories/criminalRecords.repo');
-const { citizenIdEmbed } = require('../utils/embeds');
+const { citizenIdCard } = require('../utils/cards');
 const { postToConfiguredChannel, CONFIG_KEYS } = require('./configService');
 
 /** Zwraca powiazane konto Roblox tylko jesli zostalo zweryfikowane, w przeciwnym razie null. */
@@ -18,8 +18,15 @@ function getActiveCitizen(guildId, discordId) {
 async function createCitizen(guild, discordId, data) {
   const citizen = citizensRepo.createOrReplace(guild.id, discordId, data);
   const roblox = getVerifiedRoblox(guild.id, discordId);
-  const embed = citizenIdEmbed(citizen, discordId, roblox?.roblox_username);
-  await postToConfiguredChannel(guild, 'citizen_log_channel_id', { embeds: [embed] }, 'citizen_panel_channel_id');
+  const member = await guild.members.fetch(discordId).catch(() => null);
+
+  const card = citizenIdCard({
+    citizen,
+    discordId,
+    robloxUsername: roblox?.roblox_username,
+    avatarUrl: member?.displayAvatarURL({ size: 128 }) || null,
+  });
+  await postToConfiguredChannel(guild, 'citizen_log_channel_id', card, 'citizen_panel_channel_id');
   return citizen;
 }
 

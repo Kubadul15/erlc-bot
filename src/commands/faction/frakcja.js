@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { isAdmin, canManageFaction } = require('../../utils/permissions');
-const { errorEmbed, successEmbed, brandEmbed } = require('../../utils/embeds');
+const { errorEmbed, successEmbed } = require('../../utils/embeds');
+const { factionInfoCard } = require('../../utils/cards');
 const factionService = require('../../services/factionService');
 
 function factionAutocompleteChoices(guildId, focusedValue) {
@@ -154,21 +155,8 @@ module.exports = {
       }
       const ranks = factionService.listRanks(factionId);
       const members = factionService.listMembers(factionId);
-      const rankList = ranks.map((r) => `• ${r.name} (poziom ${r.level})${r.role_id ? ` — <@&${r.role_id}>` : ''}`).join('\n') || 'Brak rang.';
 
-      await interaction.reply({
-        embeds: [
-          brandEmbed({
-            title: `🛡️ ${faction.name}${faction.short_name ? ` (${faction.short_name})` : ''}`,
-            fields: [
-              { name: 'Rola bazowa', value: faction.role_id ? `<@&${faction.role_id}>` : 'brak', inline: true },
-              { name: 'Rola dowódcza', value: faction.management_role_id ? `<@&${faction.management_role_id}>` : 'brak', inline: true },
-              { name: 'Liczba członków', value: String(members.length), inline: true },
-              { name: 'Rangi', value: rankList },
-            ],
-          }),
-        ],
-      });
+      await interaction.reply(factionInfoCard({ faction, ranks, members }));
       return;
     }
 

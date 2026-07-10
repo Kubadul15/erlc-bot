@@ -1,5 +1,5 @@
 const modActionsRepo = require('../database/repositories/modActions.repo');
-const { modActionEmbed } = require('../utils/embeds');
+const { modActionCard } = require('../utils/cards');
 const { postToConfiguredChannel } = require('./configService');
 const { formatDuration } = require('../utils/time');
 const { dmSafe } = require('./fineService');
@@ -11,7 +11,7 @@ async function logAndAnnounce(guild, { action, targetId, staffId, reason, durati
     ticketId: ticketId || null,
   });
 
-  const embed = modActionEmbed({
+  const card = modActionCard({
     action,
     targetId,
     staffId,
@@ -19,9 +19,9 @@ async function logAndAnnounce(guild, { action, targetId, staffId, reason, durati
     durationLabel: durationMs ? formatDuration(durationMs) : null,
   });
 
-  await postToConfiguredChannel(guild, 'mod_log_channel_id', { embeds: [embed] });
-  if (targetUser) await dmSafe(targetUser, { embeds: [embed] });
-  return embed;
+  await postToConfiguredChannel(guild, 'mod_log_channel_id', card);
+  if (targetUser) await dmSafe(targetUser, card);
+  return card;
 }
 
 async function warn(guild, targetUser, staffId, reason) {
@@ -40,13 +40,13 @@ async function unmute(guild, member, staffId, reason) {
 
 async function ban(guild, user, staffId, reason, deleteMessageSeconds = 0) {
   // DM przed banem - po zbanowaniu wyslanie wiadomosci czesto juz sie nie udaje.
-  const embed = modActionEmbed({ action: 'ban', targetId: user.id, staffId, reason });
-  await dmSafe(user, { embeds: [embed] });
+  const card = modActionCard({ action: 'ban', targetId: user.id, staffId, reason });
+  await dmSafe(user, card);
   await guild.members.ban(user.id, { reason, deleteMessageSeconds });
 
   modActionsRepo.record(guild.id, user.id, staffId, 'ban', reason, {});
-  await postToConfiguredChannel(guild, 'mod_log_channel_id', { embeds: [embed] });
-  return embed;
+  await postToConfiguredChannel(guild, 'mod_log_channel_id', card);
+  return card;
 }
 
 async function unban(guild, userId, staffId, reason) {
@@ -56,13 +56,13 @@ async function unban(guild, userId, staffId, reason) {
 
 async function kick(guild, member, staffId, reason) {
   const user = member.user;
-  const embed = modActionEmbed({ action: 'kick', targetId: user.id, staffId, reason });
-  await dmSafe(user, { embeds: [embed] });
+  const card = modActionCard({ action: 'kick', targetId: user.id, staffId, reason });
+  await dmSafe(user, card);
   await member.kick(reason);
 
   modActionsRepo.record(guild.id, user.id, staffId, 'kick', reason, {});
-  await postToConfiguredChannel(guild, 'mod_log_channel_id', { embeds: [embed] });
-  return embed;
+  await postToConfiguredChannel(guild, 'mod_log_channel_id', card);
+  return card;
 }
 
 function history(guildId, targetId) {

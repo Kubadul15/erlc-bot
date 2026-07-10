@@ -1,14 +1,14 @@
 # Vortex ERLC — Bot Discord
 
-Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). Zawiera:
+Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). Cały interfejs — dowody, pojazdy, tickety, moderacja, frakcje, aplikacje — zbudowany jest na Discord **Components V2** (kontenery, separatory, sekcje z miniaturką), nie na zwykłych embedach. Zawiera:
 
-- 🏛️ **Panel Obywatela** — dowody osobiste, rejestracja pojazdów, podgląd własnych danych (select menu + modale).
+- 🏛️ **Panel Obywatela** — dowody osobiste, rejestracja pojazdów, podgląd własnych danych (select menu + modale + karty V2).
 - 🔗 **Weryfikacja konta Roblox** — przed wyrobieniem dowodu bot sprawdza w Roblox API, czy podana nazwa istnieje, pokazuje dane konta (avatar, nick) i wymaga wklejenia losowego kodu w opisie profilu, zanim uzna konto za powiązane.
 - 🎫 **Zaawansowany system ticketów** — select menu z 6 kategoriami, prywatne kanały, claim/close/reopen/delete, transkrypty HTML+TXT.
 - 💰 **Mandaty i rejestr karny** powiązane z dowodem osobistym.
-- 🛡️ **System frakcji/prac** (Policja, Straż Pożarna, Pogotowie itd. — nazwy w pełni dowolne, ustawiane przez admina) — rangi, awanse/degradacje, panel zarządzania członkami.
+- 🛡️ **System frakcji/prac** (Policja, Straż Pożarna, Pogotowie itd. — nazwy w pełni dowolne, ustawiane przez admina) — rangi, awanse/degradacje, panel zarządzania członkami (karta z osadzonym select menu).
 - ⚖️ **Panel moderacji** — warn/mute/unmute/ban/unban/kick z historią (`/modlog`).
-- 📋 **System aplikacji/rekrutacji** — do staffu i do frakcji, z nowoczesnym interfejsem kart (Discord Components V2: kontenery, separatory, miniaturka avatara), akceptacją/odrzuceniem przez przyciski i kartami decyzji na DM.
+- 📋 **System aplikacji/rekrutacji** — Centrum Rekrutacji (select menu, publikowane komendą admina) do staffu i frakcji, karty decyzji na DM, akceptacja/odrzucenie przez przyciski.
 
 Stack: **Node.js + discord.js v14 + better-sqlite3**.
 

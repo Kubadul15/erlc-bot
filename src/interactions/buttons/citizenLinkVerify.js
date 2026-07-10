@@ -1,5 +1,5 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { startsWith, build } = require('../../utils/customId');
+const { MessageFlags } = require('discord.js');
+const { startsWith } = require('../../utils/customId');
 const robloxLinkService = require('../../services/robloxLinkService');
 const { errorEmbed } = require('../../utils/embeds');
 
@@ -13,33 +13,19 @@ const REASON_MESSAGES = {
 module.exports = {
   match: (customId) => startsWith(customId, 'citizen', 'link', 'verify'),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const result = await robloxLinkService.verifyLinking(interaction.guildId, interaction.user.id);
 
     if (!result.ok) {
-      const retryRow = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId(build('citizen', 'link', 'verify'))
-          .setLabel('Sprawdź ponownie')
-          .setStyle(ButtonStyle.Success)
-          .setEmoji('🔄')
-      );
+      const canRetry = result.reason === 'code_missing' || result.reason === 'api_error';
       await interaction.editReply({
         embeds: [errorEmbed(REASON_MESSAGES[result.reason] || 'Weryfikacja nie powiodła się.')],
-        components: result.reason === 'code_missing' || result.reason === 'api_error' ? [retryRow] : [],
+        components: canRetry ? [robloxLinkService.verifyButtonRow()] : [],
       });
       return;
     }
 
-    const continueRow = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId(build('citizen', 'id', 'continue'))
-        .setLabel('Kontynuuj — wyrób dowód')
-        .setStyle(ButtonStyle.Success)
-        .setEmoji('🪪')
-    );
-
-    await interaction.editReply({ embeds: [result.embed], components: [continueRow] });
+    await interaction.editReply(result.card);
   },
 };

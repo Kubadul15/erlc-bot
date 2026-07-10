@@ -1,8 +1,8 @@
-const { SlashCommandBuilder, UserSelectMenuBuilder, ActionRowBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 const { canManageFaction } = require('../../utils/permissions');
-const { errorEmbed, factionPanelEmbed } = require('../../utils/embeds');
+const { errorEmbed } = require('../../utils/embeds');
+const { factionPanelCard } = require('../../utils/cards');
 const factionService = require('../../services/factionService');
-const { build } = require('../../utils/customId');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -35,12 +35,6 @@ module.exports = {
     const members = factionService.listMembers(factionId);
     const ranks = factionService.listRanks(factionId);
 
-    const select = new UserSelectMenuBuilder()
-      .setCustomId(build('faction', 'select-member', factionId))
-      .setPlaceholder('Wybierz członka do zarządzania...');
-
-    const row = new ActionRowBuilder().addComponents(select);
-
-    await interaction.reply({ embeds: [factionPanelEmbed(faction, members, ranks)], components: [row] });
+    await interaction.reply(factionPanelCard({ faction, members, ranks }));
   },
 };

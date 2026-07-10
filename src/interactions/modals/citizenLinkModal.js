@@ -1,5 +1,5 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { startsWith, build } = require('../../utils/customId');
+const { MessageFlags } = require('discord.js');
+const { startsWith } = require('../../utils/customId');
 const robloxLinkService = require('../../services/robloxLinkService');
 const { errorEmbed } = require('../../utils/embeds');
 
@@ -8,7 +8,7 @@ module.exports = {
   async execute(interaction) {
     const username = interaction.fields.getTextInputValue('roblox_username').trim();
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const result = await robloxLinkService.startLinking(interaction.guildId, interaction.user.id, username);
     if (!result.ok) {
@@ -18,14 +18,6 @@ module.exports = {
       return;
     }
 
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId(build('citizen', 'link', 'verify'))
-        .setLabel('Sprawdź ponownie')
-        .setStyle(ButtonStyle.Success)
-        .setEmoji('🔄')
-    );
-
-    await interaction.editReply({ embeds: [result.embed], components: [row] });
+    await interaction.editReply(result.card);
   },
 };

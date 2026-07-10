@@ -1,7 +1,6 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const robloxLinkService = require('../../services/robloxLinkService');
 const { errorEmbed } = require('../../utils/embeds');
-const { build } = require('../../utils/customId');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -13,7 +12,7 @@ module.exports = {
   async execute(interaction) {
     const username = interaction.options.getString('username', true).trim();
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const result = await robloxLinkService.startLinking(interaction.guildId, interaction.user.id, username);
     if (!result.ok) {
@@ -23,14 +22,6 @@ module.exports = {
       return;
     }
 
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId(build('citizen', 'link', 'verify'))
-        .setLabel('Sprawdź ponownie')
-        .setStyle(ButtonStyle.Success)
-        .setEmoji('🔄')
-    );
-
-    await interaction.editReply({ embeds: [result.embed], components: [row] });
+    await interaction.editReply(result.card);
   },
 };

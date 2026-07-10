@@ -1,10 +1,10 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const { startsWith, build } = require('../../utils/customId');
 const citizenService = require('../../services/citizenService');
 const vehicleService = require('../../services/vehicleService');
 const robloxLinkService = require('../../services/robloxLinkService');
-const { citizenIdEmbed, vehicleEmbed, errorEmbed, brandEmbed } = require('../../utils/embeds');
-const { EMOJI } = require('../../config/constants');
+const { errorEmbed } = require('../../utils/embeds');
+const { citizenIdCard, vehicleCard, robloxNotLinkedCard, robloxLinkCard } = require('../../utils/cards');
 const { showIdModal, showVehicleModal } = require('../../services/citizenModals');
 
 module.exports = {
@@ -23,17 +23,7 @@ module.exports = {
             .setStyle(ButtonStyle.Primary)
             .setEmoji('🔗')
         );
-        await interaction.reply({
-          embeds: [
-            brandEmbed({
-              description:
-                `${EMOJI.info} Zanim wyrobisz dowód, musisz powiązać i zweryfikować swoją nazwę użytkownika Roblox.\n` +
-                `Kliknij przycisk poniżej albo użyj komendy \`/link-roblox\`.`,
-            }),
-          ],
-          components: [row],
-          ephemeral: true,
-        });
+        await interaction.reply({ ...robloxNotLinkedCard(row), ephemeral: true });
         return;
       }
 
@@ -44,23 +34,16 @@ module.exports = {
             .setLabel('Sprawdź ponownie')
             .setStyle(ButtonStyle.Success)
             .setEmoji('🔄'),
-          new ButtonBuilder()
-            .setCustomId(build('citizen', 'link', 'continue'))
-            .setLabel('Zacznij od nowa')
-            .setStyle(ButtonStyle.Secondary)
+          new ButtonBuilder().setCustomId(build('citizen', 'link', 'continue')).setLabel('Zacznij od nowa').setStyle(ButtonStyle.Secondary)
         );
-        await interaction.reply({
-          embeds: [
-            brandEmbed({
-              title: '🔗 Dokończ powiązanie konta Roblox',
-              description:
-                `Rozpocząłeś już powiązanie konta **${roblox.roblox_username}**, ale nie zostało ono jeszcze zweryfikowane.\n\n` +
-                `Wklej ten kod do sekcji **"O mnie"** na Robloxie, zapisz zmiany i kliknij **Sprawdź ponownie**:\n\`\`\`${roblox.verification_code}\`\`\``,
-            }),
-          ],
-          components: [row],
-          ephemeral: true,
+        const card = robloxLinkCard({
+          resolved: { name: roblox.roblox_username },
+          avatarUrl: null,
+          code: roblox.verification_code,
+          verified: false,
+          actionRow: row,
         });
+        await interaction.reply({ ...card, ephemeral: true });
         return;
       }
 
@@ -88,12 +71,14 @@ module.exports = {
         return;
       }
       const roblox = citizenService.getVerifiedRoblox(interaction.guildId, interaction.user.id);
-      const idEmbed = citizenIdEmbed(summary.citizen, interaction.user.id, roblox?.roblox_username);
-      idEmbed.addFields(
-        { name: '💰 Nieopłacone mandaty', value: `$${summary.unpaidTotal} (${summary.fines.length} łącznie)`, inline: true },
-        { name: '⚖️ Wpisy w rejestrze karnym', value: String(summary.records.length), inline: true }
-      );
-      await interaction.reply({ embeds: [idEmbed], ephemeral: true });
+      const card = citizenIdCard({
+        citizen: summary.citizen,
+        discordId: interaction.user.id,
+        robloxUsername: roblox?.roblox_username,
+        avatarUrl: interaction.user.displayAvatarURL({ size: 128 }),
+        summary,
+      });
+      await interaction.reply({ ...card, ephemeral: true });
       return;
     }
 
@@ -103,8 +88,8 @@ module.exports = {
         await interaction.reply({ embeds: [errorEmbed('Brak zarejestrowanych pojazdów.')], ephemeral: true });
         return;
       }
-      const embeds = vehicles.slice(0, 10).map((v) => vehicleEmbed(v, interaction.user.id));
-      await interaction.reply({ embeds, ephemeral: true });
+      const containers = vehicles.slice(0, 10).flatMap((v) => vehicleCard({ vehicle: v, discordId: interaction.user.id }).components);
+      await interaction.reply({ flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2, components: containers });
       return;
     }
   },

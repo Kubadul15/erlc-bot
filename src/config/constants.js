@@ -4,6 +4,7 @@ module.exports = {
   EMBED_COLOR_SUCCESS: 0x57f287,
   EMBED_COLOR_DANGER: 0xed4245,
   EMBED_COLOR_WARNING: 0xfee75c,
+  DEFAULT_AVATAR_URL: 'https://cdn.discordapp.com/embed/avatars/0.png', // fallback miniatury - Section w Components V2 wymaga akcesorium
 
   EMOJI: {
     id: '🪪',
