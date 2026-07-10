@@ -36,7 +36,7 @@ module.exports = {
         `Chcesz dołączyć do zespołu staffu albo jednej z frakcji? Wybierz opcję poniżej, aby wypełnić formularz.\n\n` +
         `${DIVIDER}\n` +
         `🛠️ **Staff** — pomoc w moderacji i obsłudze społeczności.\n` +
-        `🛡️ **Frakcja** — praca w LSPD, LSFD, DOT i innych służbach.\n` +
+        `🛡️ **Frakcja** — praca w Policji, Straży Pożarnej, Pogotowiu i innych służbach.\n` +
         `${DIVIDER}\n\n` +
         `Po wysłaniu formularza otrzymasz numer aplikacji i powiadomienie DM z decyzją staffu.` +
         factionList,

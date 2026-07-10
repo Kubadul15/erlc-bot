@@ -23,13 +23,13 @@ function rankAutocompleteChoices(factionId, focusedValue) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('frakcja')
-    .setDescription('Zarządzanie frakcjami (LSPD, LSFD, DOT itd.)')
+    .setDescription('Zarządzanie frakcjami (Policja, Straż Pożarna, Pogotowie itd.)')
     .addSubcommand((sub) =>
       sub
         .setName('create')
         .setDescription('Utwórz nową frakcję.')
         .addStringOption((o) => o.setName('name').setDescription('Nazwa frakcji').setRequired(true).setMaxLength(80))
-        .addStringOption((o) => o.setName('short_name').setDescription('Skrót, np. LSPD').setRequired(false).setMaxLength(20))
+        .addStringOption((o) => o.setName('short_name').setDescription('Skrót, np. KMP').setRequired(false).setMaxLength(20))
         .addRoleOption((o) => o.setName('role').setDescription('Rola nadawana wszystkim członkom').setRequired(false))
         .addRoleOption((o) => o.setName('management_role').setDescription('Rola dowódcza (awanse/degradacje)').setRequired(false))
         .addStringOption((o) => o.setName('color').setDescription('Kolor hex, np. #1abc9c').setRequired(false))
