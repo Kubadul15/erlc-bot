@@ -273,6 +273,40 @@ function factionInfoCard({ faction, ranks, members }) {
   return cardPayload(container);
 }
 
+// ---------- Sesje RP ----------
+
+function rpStartCard({ staffId, code, pingRoleId }) {
+  const container = baseContainer(EMBED_COLOR_SUCCESS).addTextDisplayComponents(
+    ...(pingRoleId ? [textDisplay(`<@&${pingRoleId}>`)] : []),
+    textDisplay(`## 🟢 Roleplay wystartował!`)
+  );
+
+  container
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(
+      textDisplay(`🔑 **Kod serwera:** \`${code}\``),
+      textDisplay(`👤 **Rozpoczęte przez:** <@${staffId}>`)
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText('Do zobaczenia w grze!'));
+
+  return cardPayload(container);
+}
+
+function rpStopCard({ staffId, durationLabel }) {
+  const container = baseContainer(EMBED_COLOR_DANGER)
+    .addTextDisplayComponents(textDisplay(`## 🔴 Roleplay zakończony`))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(
+      textDisplay(`👤 **Zakończone przez:** <@${staffId}>`),
+      ...(durationLabel ? [textDisplay(`⏱️ **Czas trwania:** ${durationLabel}`)] : [])
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText('Dziękujemy za grę!'));
+
+  return cardPayload(container);
+}
+
 module.exports = {
   citizenIdCard,
   vehicleCard,
@@ -285,4 +319,6 @@ module.exports = {
   modActionCard,
   factionPanelCard,
   factionInfoCard,
+  rpStartCard,
+  rpStopCard,
 };

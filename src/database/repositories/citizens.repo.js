@@ -14,6 +14,7 @@ const getActiveStmt = db.prepare(
   "SELECT * FROM citizens WHERE guild_id = ? AND discord_id = ? AND status = 'active'"
 );
 const getByIdStmt = db.prepare('SELECT * FROM citizens WHERE id = ?');
+const countActiveStmt = db.prepare("SELECT COUNT(*) AS n FROM citizens WHERE guild_id = ? AND status = 'active'");
 
 function createOrReplace(guildId, discordId, data) {
   const now = Date.now();
@@ -42,4 +43,8 @@ function getById(citizenId) {
   return getByIdStmt.get(citizenId) || null;
 }
 
-module.exports = { createOrReplace, getActive, getById };
+function countActive(guildId) {
+  return countActiveStmt.get(guildId).n;
+}
+
+module.exports = { createOrReplace, getActive, getById, countActive };

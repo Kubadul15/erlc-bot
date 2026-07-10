@@ -16,6 +16,7 @@ const reopenStmt = db.prepare(
   "UPDATE tickets SET status = 'open', closed_at = NULL, closed_by_discord_id = NULL WHERE id = ?"
 );
 const countByGuildStmt = db.prepare('SELECT COUNT(*) AS n FROM tickets WHERE guild_id = ?');
+const countOpenStmt = db.prepare("SELECT COUNT(*) AS n FROM tickets WHERE guild_id = ? AND status IN ('open', 'claimed')");
 
 function create(guildId, channelId, category, openerId, initialData) {
   const info = insertStmt.run({
@@ -53,4 +54,8 @@ function nextTicketNumber(guildId) {
   return countByGuildStmt.get(guildId).n + 1;
 }
 
-module.exports = { create, getById, getByChannel, claim, close, reopen, nextTicketNumber };
+function countOpen(guildId) {
+  return countOpenStmt.get(guildId).n;
+}
+
+module.exports = { create, getById, getByChannel, claim, close, reopen, nextTicketNumber, countOpen };

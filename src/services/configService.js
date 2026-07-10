@@ -13,11 +13,13 @@ const CONFIG_KEYS = {
     faction_panel_channel_id: 'Kanał Panelu Frakcji',
     application_panel_channel_id: 'Kanał Centrum Rekrutacji',
     application_log_channel_id: 'Kanał logów aplikacji staff',
+    rp_announce_channel_id: 'Kanał ogłoszeń RP (/rp)',
   },
   roles: {
     role_admin: 'Rola administratora bota',
     role_staff: 'Rola staffu',
     role_application_staff: 'Rola rozpatrującego aplikacje',
+    role_rp_ping: 'Rola pingowana przy starcie RP',
     ticket_role_general: 'Rola wsparcia — Pomoc ogólna',
     ticket_role_report: 'Rola wsparcia — Zgłoszenie gracza',
     ticket_role_appeal: 'Rola wsparcia — Odwołania',

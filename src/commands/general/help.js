@@ -29,11 +29,12 @@ module.exports = {
         {
           name: '🛡️ Staff',
           value:
-            '`/mandat`, `/rekord`, `/warn`, `/mute`, `/unmute`, `/ban`, `/unban`, `/kick`, `/modlog`\n`/frakcja`, `/frakcja-panel`',
+            '`/mandat`, `/rekord`, `/warn`, `/mute`, `/unmute`, `/ban`, `/unban`, `/kick`, `/modlog`\n`/frakcja`, `/frakcja-panel`\n`/rp start`, `/rp stop` — ogłoś start/koniec sesji roleplay',
         },
         {
           name: '⚙️ Administracja',
-          value: '`/config`, `/setup-citizen-panel`, `/setup-ticket-panel`, `/setup-application-panel`, `/setup-faction-panel`',
+          value:
+            '`/config`, `/setup-citizen-panel`, `/setup-ticket-panel`, `/setup-application-panel`, `/setup-faction-panel`, `/setup-stats-panel`',
         },
       ],
     });

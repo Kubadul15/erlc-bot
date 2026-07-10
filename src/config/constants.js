@@ -50,6 +50,16 @@ module.exports = {
     faction: 'Frakcja',
   },
 
+  STAT_TYPES: {
+    members: { label: 'Członkowie', emoji: '👥' },
+    online: { label: 'Online', emoji: '🟢' },
+    citizens: { label: 'Wyrobione dowody', emoji: '🪪' },
+    tickets_open: { label: 'Otwarte tickety', emoji: '🎫' },
+  },
+  STAT_UPDATE_INTERVAL_MS: 10 * 60 * 1000, // 10 min - limit Discorda to 2 zmiany nazwy kanalu / 10 min
+
+  RP_JOIN_CODE_DEFAULT: 'VortexRP',
+
   FACTION_PRESETS: [
     {
       name: 'Policja',
