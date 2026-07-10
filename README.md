@@ -2,8 +2,8 @@
 
 Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). Cały interfejs — dowody, pojazdy, tickety, moderacja, frakcje, aplikacje — zbudowany jest na Discord **Components V2** (kontenery, separatory, sekcje z miniaturką), nie na zwykłych embedach. Zawiera:
 
-- 🏛️ **Panel Obywatela** — dowody osobiste, rejestracja pojazdów, podgląd własnych danych (select menu + modale + karty V2).
-- 🔗 **Weryfikacja konta Roblox** — przed wyrobieniem dowodu bot sprawdza w Roblox API, czy podana nazwa istnieje, pokazuje dane konta (avatar, nick) i wymaga wklejenia losowego kodu w opisie profilu, zanim uzna konto za powiązane.
+- 🏛️ **Panel Obywatela** — dowody osobiste, rejestracja pojazdów, podgląd własnych danych (select menu + modale + karty V2). Wyrobienie dowodu nie wymaga powiązania Roblox — to osobny, niezależny krok.
+- 🔗 **Panel weryfikacji Roblox** (`/setup-roblox-panel`) — osobny panel: bot sprawdza w Roblox API, czy podana nazwa istnieje, pokazuje dane konta (avatar, nick) i wymaga wklejenia losowego kodu w opisie profilu. Po weryfikacji nadaje rolę skonfigurowaną w `VERIFIED_ROBLOX_ROLE_ID`.
 - 🎫 **Zaawansowany system ticketów** — select menu z 6 kategoriami, prywatne kanały, claim/close/reopen/delete, transkrypty HTML+TXT.
 - 💰 **Mandaty i rejestr karny** powiązane z dowodem osobistym.
 - 🛡️ **System frakcji/prac** — domyślnie Policja, Straż Pożarna, Straż Miejska, GDDKiA, Pogotowie Ratunkowe (`/setup-faction-panel` zasiewa je automatycznie), plus dowolne własne frakcje. Publiczny **Panel Frakcji** do przeglądania, osobny panel zarządzania członkami (rangi, awanse/degradacje) dla dowódców.
@@ -44,11 +44,13 @@ npm start
 Po starcie bota, na serwerze:
 
 1. `/setup-citizen-panel` — publikuje Panel Obywatela.
-2. `/setup-ticket-panel` — publikuje panel ticketów.
-3. `/setup-application-panel` — publikuje Centrum Rekrutacji (select menu Staff/Frakcja, klik → dopiero wtedy otwiera się formularz).
-4. `/setup-faction-panel` — zasiewa domyślne frakcje (Policja, Straż Pożarna, Straż Miejska, GDDKiA, Pogotowie Ratunkowe) i publikuje publiczny Panel Frakcji.
-5. `/setup-stats-panel` — tworzy kanały głosowe ze statystykami serwera (aktualizują się same co 10 minut).
-6. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**. Skonfiguruj `rp_announce_channel_id`, aby `/rp start`/`/rp stop` miały gdzie wysyłać ogłoszenia.
+2. `/setup-roblox-panel` — publikuje osobny panel weryfikacji konta Roblox.
+3. `/setup-ticket-panel` — publikuje panel ticketów.
+4. `/setup-application-panel` — publikuje Centrum Rekrutacji (select menu Staff/Frakcja, klik → dopiero wtedy otwiera się formularz).
+5. `/setup-faction-panel` — zasiewa domyślne frakcje (Policja, Straż Pożarna, Straż Miejska, GDDKiA, Pogotowie Ratunkowe) i publikuje publiczny Panel Frakcji.
+6. `/setup-stats-panel` — tworzy kanały głosowe ze statystykami serwera (aktualizują się same co 10 minut).
+7. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**. Skonfiguruj `rp_announce_channel_id`, aby `/rp start`/`/rp stop` miały gdzie wysyłać ogłoszenia.
+8. Opcjonalnie ustaw `VERIFIED_ROBLOX_ROLE_ID` i `CITIZEN_LOG_CHANNEL_ID` w zmiennych środowiskowych (patrz niżej) — te dwa ustawienia świadomie żyją w env, nie w `/config`, żeby nie trzeba było ich ustawiać ponownie po każdym redeployu.
 
 ## Zmienne środowiskowe
 
@@ -60,6 +62,8 @@ Po starcie bota, na serwerze:
 | `DEPLOY_GLOBAL` | `true`/`false` — rejestracja komend globalnie zamiast na `GUILD_ID` |
 | `DATABASE_PATH` | Ścieżka do pliku SQLite (lokalnie `./data/erlc.sqlite`) |
 | `LOG_LEVEL` | `error` \| `warn` \| `info` \| `debug` |
+| `VERIFIED_ROBLOX_ROLE_ID` | Rola nadawana automatycznie po weryfikacji konta Roblox (puste = brak) |
+| `CITIZEN_LOG_CHANNEL_ID` | Kanał, na który trafiają utworzone dowody (puste = `/config` → panel obywatela) |
 
 ## Deployment na Railway
 
@@ -94,6 +98,7 @@ src/
 |---|---|
 | `/link-roblox` | Powiąż nazwę użytkownika Roblox |
 | `/setup-citizen-panel` | Publikuje Panel Obywatela |
+| `/setup-roblox-panel` | Publikuje panel weryfikacji konta Roblox |
 | `/setup-ticket-panel` | Publikuje panel ticketów |
 | `/setup-application-panel` | Publikuje Centrum Rekrutacji |
 | `/setup-faction-panel` | Zasiewa domyślne frakcje i publikuje Panel Frakcji |

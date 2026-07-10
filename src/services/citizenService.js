@@ -4,6 +4,7 @@ const finesRepo = require('../database/repositories/fines.repo');
 const recordsRepo = require('../database/repositories/criminalRecords.repo');
 const { citizenIdCard } = require('../utils/cards');
 const { postToConfiguredChannel, CONFIG_KEYS } = require('./configService');
+const env = require('../config/env');
 
 /** Zwraca powiazane konto Roblox tylko jesli zostalo zweryfikowane, w przeciwnym razie null. */
 function getVerifiedRoblox(guildId, discordId) {
@@ -26,7 +27,7 @@ async function createCitizen(guild, discordId, data) {
     robloxUsername: roblox?.roblox_username,
     avatarUrl: member?.displayAvatarURL({ size: 128 }) || null,
   });
-  await postToConfiguredChannel(guild, 'citizen_log_channel_id', card, 'citizen_panel_channel_id');
+  await postToConfiguredChannel(guild, 'citizen_log_channel_id', card, 'citizen_panel_channel_id', env.citizenLogChannelId);
   return citizen;
 }
 

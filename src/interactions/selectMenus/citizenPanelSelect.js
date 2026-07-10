@@ -1,10 +1,9 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
-const { startsWith, build } = require('../../utils/customId');
+const { MessageFlags } = require('discord.js');
+const { startsWith } = require('../../utils/customId');
 const citizenService = require('../../services/citizenService');
 const vehicleService = require('../../services/vehicleService');
-const robloxLinkService = require('../../services/robloxLinkService');
 const { errorEmbed } = require('../../utils/embeds');
-const { citizenIdCard, vehicleCard, robloxNotLinkedCard, robloxLinkCard } = require('../../utils/cards');
+const { citizenIdCard, vehicleCard } = require('../../utils/cards');
 const { showIdModal, showVehicleModal } = require('../../services/citizenModals');
 
 module.exports = {
@@ -13,40 +12,6 @@ module.exports = {
     const choice = interaction.values[0];
 
     if (choice === 'id') {
-      const roblox = robloxLinkService.getLinkedAccount(interaction.guildId, interaction.user.id);
-
-      if (!roblox) {
-        const row = new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId(build('citizen', 'link', 'continue'))
-            .setLabel('Powiąż konto Roblox')
-            .setStyle(ButtonStyle.Primary)
-            .setEmoji('🔗')
-        );
-        await interaction.reply({ ...robloxNotLinkedCard(row), ephemeral: true });
-        return;
-      }
-
-      if (!roblox.verified) {
-        const row = new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId(build('citizen', 'link', 'verify'))
-            .setLabel('Sprawdź ponownie')
-            .setStyle(ButtonStyle.Success)
-            .setEmoji('🔄'),
-          new ButtonBuilder().setCustomId(build('citizen', 'link', 'continue')).setLabel('Zacznij od nowa').setStyle(ButtonStyle.Secondary)
-        );
-        const card = robloxLinkCard({
-          resolved: { name: roblox.roblox_username },
-          avatarUrl: null,
-          code: roblox.verification_code,
-          verified: false,
-          actionRow: row,
-        });
-        await interaction.reply({ ...card, ephemeral: true });
-        return;
-      }
-
       await showIdModal(interaction);
       return;
     }

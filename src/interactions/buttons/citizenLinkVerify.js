@@ -15,7 +15,7 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-    const result = await robloxLinkService.verifyLinking(interaction.guildId, interaction.user.id);
+    const result = await robloxLinkService.verifyLinking(interaction.guild, interaction.user.id);
 
     if (!result.ok) {
       const canRetry = result.reason === 'code_missing' || result.reason === 'api_error';

@@ -4,7 +4,8 @@ const logger = require('../utils/logger');
 const CONFIG_KEYS = {
   channels: {
     citizen_panel_channel_id: 'Kanał panelu obywatela',
-    citizen_log_channel_id: 'Kanał logów dowodów',
+    citizen_log_channel_id: 'Kanał logów dowodów (nadpisywany przez env CITIZEN_LOG_CHANNEL_ID)',
+    roblox_panel_channel_id: 'Kanał panelu weryfikacji Roblox',
     vehicle_log_channel_id: 'Kanał logów pojazdów',
     ticket_panel_channel_id: 'Kanał panelu ticketów',
     ticket_parent_category_id: 'Kategoria kanałów ticketów',
@@ -37,8 +38,13 @@ function getRoleId(guildId, key) {
   return guildSettings.get(guildId, key);
 }
 
-async function getConfiguredChannel(guild, key, fallbackKey) {
-  let channelId = getChannelId(guild.id, key);
+/**
+ * envChannelId (opcjonalny) ma pierwszenstwo nad kluczem z /config - pozwala na "sztywne"
+ * skonfigurowanie kanalu przez zmienna srodowiskowa (np. CITIZEN_LOG_CHANNEL_ID), zamiast
+ * wymagac uruchomienia komendy po kazdym redeployu.
+ */
+async function getConfiguredChannel(guild, key, fallbackKey, envChannelId) {
+  let channelId = envChannelId || getChannelId(guild.id, key);
   if (!channelId && fallbackKey) {
     channelId = getChannelId(guild.id, fallbackKey);
   }
@@ -52,8 +58,8 @@ async function getConfiguredChannel(guild, key, fallbackKey) {
 }
 
 /** fallbackKey pozwala nie "gubic" wiadomosci, gdy dedykowany kanal logow nie zostal jeszcze skonfigurowany. */
-async function postToConfiguredChannel(guild, key, payload, fallbackKey) {
-  const channel = await getConfiguredChannel(guild, key, fallbackKey);
+async function postToConfiguredChannel(guild, key, payload, fallbackKey, envChannelId) {
+  const channel = await getConfiguredChannel(guild, key, fallbackKey, envChannelId);
   if (!channel) return null;
   return channel.send(payload);
 }

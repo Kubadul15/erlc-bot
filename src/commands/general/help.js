@@ -11,7 +11,12 @@ module.exports = {
       fields: [
         {
           name: '🏛️ Obywatel',
-          value: '`/link-roblox` — powiąż konto Roblox\nUżyj Panelu Obywatela na kanale, aby wyrobić dowód, zarejestrować pojazd i sprawdzić swoje dane.',
+          value: 'Użyj Panelu Obywatela na kanale, aby wyrobić dowód, zarejestrować pojazd i sprawdzić swoje dane.',
+        },
+        {
+          name: '🔗 Weryfikacja Roblox',
+          value:
+            '`/link-roblox` albo Panel Weryfikacji Roblox na kanale — osobny, opcjonalny krok niepowiązany z wyrobieniem dowodu.',
         },
         {
           name: '🎫 Tickety',
@@ -34,7 +39,7 @@ module.exports = {
         {
           name: '⚙️ Administracja',
           value:
-            '`/config`, `/setup-citizen-panel`, `/setup-ticket-panel`, `/setup-application-panel`, `/setup-faction-panel`, `/setup-stats-panel`',
+            '`/config`, `/setup-citizen-panel`, `/setup-roblox-panel`, `/setup-ticket-panel`, `/setup-application-panel`, `/setup-faction-panel`, `/setup-stats-panel`',
         },
       ],
     });

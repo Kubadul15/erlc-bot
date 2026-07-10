@@ -4,6 +4,8 @@ const robloxAccountsRepo = require('../database/repositories/robloxAccounts.repo
 const robloxApi = require('./robloxApi');
 const { robloxLinkCard } = require('../utils/cards');
 const { build } = require('../utils/customId');
+const env = require('../config/env');
+const logger = require('../utils/logger');
 
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // bez znakow latwych do pomylenia (0/O, 1/I)
 
@@ -21,9 +23,9 @@ function verifyButtonRow() {
   );
 }
 
-function continueButtonRow() {
+function continueToIdButtonRow() {
   return new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setCustomId(build('citizen', 'id', 'continue')).setLabel('Kontynuuj — wyrób dowód').setStyle(ButtonStyle.Success).setEmoji('🪪')
+    new ButtonBuilder().setCustomId(build('citizen', 'id', 'continue')).setLabel('Wyrób dowód').setStyle(ButtonStyle.Success).setEmoji('🪪')
   );
 }
 
@@ -60,12 +62,24 @@ function pendingLinkReminderCard(pendingRow) {
   });
 }
 
+/** Nadaje role skonfigurowana przez VERIFIED_ROBLOX_ROLE_ID (jesli ustawiona w env). */
+async function grantVerifiedRole(guild, discordId) {
+  if (!env.verifiedRobloxRoleId) return;
+  try {
+    const member = await guild.members.fetch(discordId);
+    await member.roles.add(env.verifiedRobloxRoleId);
+  } catch (err) {
+    logger.warn(`Nie udało się nadać roli po weryfikacji Roblox (${discordId}):`, err.message);
+  }
+}
+
 /**
  * Sprawdza, czy uzytkownik dodal kod weryfikacyjny do opisu profilu Roblox.
+ * Przyjmuje pelny obiekt `guild` (nie sam ID), bo przy sukcesie nadaje role z env.
  * reason: 'no_pending' (nikt nie rozpoczal linkowania) | 'api_error' | 'code_missing'
  */
-async function verifyLinking(guildId, discordId) {
-  const pending = robloxAccountsRepo.get(guildId, discordId);
+async function verifyLinking(guild, discordId) {
+  const pending = robloxAccountsRepo.get(guild.id, discordId);
   if (!pending || pending.verified || !pending.verification_code) {
     return { ok: false, reason: 'no_pending' };
   }
@@ -80,7 +94,8 @@ async function verifyLinking(guildId, discordId) {
     return { ok: false, reason: 'code_missing' };
   }
 
-  robloxAccountsRepo.markVerified(guildId, discordId);
+  robloxAccountsRepo.markVerified(guild.id, discordId);
+  await grantVerifiedRole(guild, discordId);
 
   const avatarUrl = await robloxApi.getAvatarThumbnailUrl(pending.roblox_user_id);
   return {
@@ -89,7 +104,7 @@ async function verifyLinking(guildId, discordId) {
       resolved: { name: pending.roblox_username, displayName: details.displayName },
       avatarUrl,
       verified: true,
-      actionRow: continueButtonRow(),
+      actionRow: continueToIdButtonRow(),
     }),
   };
 }
