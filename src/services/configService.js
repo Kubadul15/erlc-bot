@@ -15,6 +15,7 @@ const CONFIG_KEYS = {
     application_panel_channel_id: 'Kanał Centrum Rekrutacji',
     application_log_channel_id: 'Kanał logów aplikacji staff',
     rp_announce_channel_id: 'Kanał ogłoszeń RP (/rp)',
+    shop_panel_channel_id: 'Kanał panelu sklepu',
   },
   roles: {
     role_admin: 'Rola administratora bota',

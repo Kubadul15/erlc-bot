@@ -60,6 +60,30 @@ module.exports = {
 
   RP_JOIN_CODE_DEFAULT: 'VortexRP',
 
+  CURRENCY_SYMBOL: '$',
+
+  DAILY_REWARD_MIN: 150,
+  DAILY_REWARD_MAX: 300,
+  DAILY_COOLDOWN_MS: 24 * 60 * 60 * 1000,
+
+  WORK_REWARD_MIN: 40,
+  WORK_REWARD_MAX: 120,
+  WORK_COOLDOWN_MS: 60 * 60 * 1000,
+  WORK_FLAVOR_TEXTS: [
+    'Pracowałeś na zmianie w komisariacie i przypilnowałeś porządku.',
+    'Naprawiłeś silnik w warsztacie mechanicznym.',
+    'Odholowałeś zepsuty pojazd z autostrady.',
+    'Sprzedawałeś towar w lokalnym sklepie.',
+    'Pomagałeś w akcji ratunkowej straży pożarnej.',
+    'Woziłeś pasażerów jako kierowca taxi.',
+    'Malowałeś linie na drodze dla GDDKiA.',
+    'Sprzątałeś ulice miasta po dużej imprezie.',
+    'Pracowałeś na budowie nowego osiedla.',
+    'Roznosiłeś przesyłki po całym mieście.',
+  ],
+
+  FINE_PAYMENT_TRANSACTION_TYPE: 'fine_payment',
+
   FACTION_PRESETS: [
     {
       name: 'Policja',

@@ -32,14 +32,19 @@ module.exports = {
             'Użyj Centrum Rekrutacji na kanale (wybierz Staff/Frakcja z select menu), albo bezpośrednio: `/aplikacja-staff`, `/aplikacja-frakcja`.',
         },
         {
+          name: '💰 Ekonomia',
+          value:
+            '`/saldo`, `/nagroda-dzienna`, `/praca`, `/przelew`, `/ranking`\n`/sklep` albo panel sklepu na kanale — kup produkty, niektóre nadają rangi\n`/moje-mandaty`, `/zaplac-mandat` — opłać mandat z portfela',
+        },
+        {
           name: '🛡️ Staff',
           value:
-            '`/mandat`, `/rekord`, `/warn`, `/mute`, `/unmute`, `/ban`, `/unban`, `/kick`, `/modlog`\n`/frakcja`, `/frakcja-panel`\n`/rp start`, `/rp stop` — ogłoś start/koniec sesji roleplay',
+            '`/mandat`, `/rekord`, `/warn`, `/mute`, `/unmute`, `/ban`, `/unban`, `/kick`, `/modlog`\n`/frakcja`, `/frakcja-panel`\n`/rp start`, `/rp stop` — ogłoś start/koniec sesji roleplay\n`/ekonomia dodaj/usun` — zarządzaj saldem gracza',
         },
         {
           name: '⚙️ Administracja',
           value:
-            '`/config`, `/setup-citizen-panel`, `/setup-roblox-panel`, `/setup-ticket-panel`, `/setup-application-panel`, `/setup-faction-panel`, `/setup-stats-panel`',
+            '`/config`, `/setup-citizen-panel`, `/setup-roblox-panel`, `/setup-ticket-panel`, `/setup-application-panel`, `/setup-faction-panel`, `/setup-stats-panel`, `/setup-shop-panel`, `/sklep-admin dodaj/usun`',
         },
       ],
     });

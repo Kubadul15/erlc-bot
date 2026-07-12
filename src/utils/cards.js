@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, UserSelectMenuBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, UserSelectMenuBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { divider, textDisplay, footerText, headerSection, mediaGallery, baseContainer, cardPayload, parseHexColor } = require('./cardKit');
 const { robloxProfileLink } = require('./embeds');
 const { build } = require('./customId');
@@ -10,6 +10,7 @@ const {
   EMOJI,
   TICKET_CATEGORIES,
   DEFAULT_AVATAR_URL,
+  CURRENCY_SYMBOL,
 } = require('../config/constants');
 
 // ---------- Obywatel: dowod osobisty i pojazdy ----------
@@ -347,6 +348,145 @@ function memberDepartureCard({ userId, tag, avatarUrl, memberCount, durationLabe
   return cardPayload(container);
 }
 
+// ---------- Ekonomia ----------
+
+function money(amount) {
+  return `${CURRENCY_SYMBOL}${amount.toLocaleString('pl-PL')}`;
+}
+
+function walletCard({ discordId, avatarUrl, balance, recentTransactions }) {
+  const container = baseContainer(EMBED_COLOR).addSectionComponents(
+    headerSection(
+      [`## 💰 Portfel`, `👤 <@${discordId}>\n**Saldo:** ${money(balance)}`],
+      avatarUrl || DEFAULT_AVATAR_URL,
+      'Avatar właściciela'
+    )
+  );
+
+  if (recentTransactions?.length) {
+    const lines = recentTransactions
+      .slice(0, 5)
+      .map((t) => `${t.amount >= 0 ? '🟢 +' : '🔴 '}${money(t.amount)} — ${t.reason || t.type}`)
+      .join('\n');
+    container.addSeparatorComponents(divider()).addTextDisplayComponents(textDisplay(`**Ostatnie transakcje**\n${lines}`));
+  }
+
+  container.addSeparatorComponents(divider()).addTextDisplayComponents(footerText());
+  return cardPayload(container);
+}
+
+function leaderboardCard(entries) {
+  const medals = ['🥇', '🥈', '🥉'];
+  const lines = entries.length
+    ? entries.map((w, i) => `${medals[i] || `**${i + 1}.**`} <@${w.discord_id}> — ${money(w.balance)}`).join('\n')
+    : 'Nikt jeszcze nic nie zarobił.';
+
+  const container = baseContainer(EMBED_COLOR)
+    .addTextDisplayComponents(textDisplay(`## 🏆 Ranking Najbogatszych`))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(textDisplay(lines))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText());
+
+  return cardPayload(container);
+}
+
+function shopCard(items) {
+  const container = baseContainer(EMBED_COLOR).addTextDisplayComponents(
+    textDisplay(`## 🛒 Sklep — ${BRAND_NAME}`),
+    textDisplay(items.length ? 'Wybierz produkt poniżej, aby go kupić.' : 'Sklep jest obecnie pusty.')
+  );
+
+  if (items.length) {
+    const lines = items.map((i) => `${i.emoji || '🏷️'} **${i.name}** — ${money(i.price)}${i.description ? `\n> ${i.description}` : ''}`).join('\n\n');
+    container.addSeparatorComponents(divider()).addTextDisplayComponents(textDisplay(lines));
+
+    const select = new StringSelectMenuBuilder()
+      .setCustomId(build('economy', 'shop', 'select'))
+      .setPlaceholder('Wybierz produkt do kupienia...')
+      .addOptions(
+        items.slice(0, 25).map((i) => ({
+          label: `${i.name} — ${money(i.price)}`,
+          value: String(i.id),
+          description: i.description ? i.description.slice(0, 100) : undefined,
+          emoji: i.emoji || '🏷️',
+        }))
+      );
+    container.addSeparatorComponents(divider()).addActionRowComponents(new ActionRowBuilder().addComponents(select));
+  }
+
+  container.addSeparatorComponents(divider()).addTextDisplayComponents(footerText());
+  return cardPayload(container);
+}
+
+function dailyResultCard({ amount, balance }) {
+  const container = baseContainer(EMBED_COLOR_SUCCESS)
+    .addTextDisplayComponents(textDisplay(`## 🎁 Dzienna nagroda odebrana!`))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(textDisplay(`💵 **Otrzymano:** ${money(amount)}`), textDisplay(`💰 **Nowe saldo:** ${money(balance)}`))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText('Wróć jutro po kolejną!'));
+  return cardPayload(container);
+}
+
+function workResultCard({ amount, flavorText, balance }) {
+  const container = baseContainer(EMBED_COLOR_SUCCESS)
+    .addTextDisplayComponents(textDisplay(`## 💼 Praca zakończona!`))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(
+      textDisplay(`> ${flavorText}`),
+      textDisplay(`💵 **Zarobiono:** ${money(amount)}`),
+      textDisplay(`💰 **Nowe saldo:** ${money(balance)}`)
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText());
+  return cardPayload(container);
+}
+
+function payResultCard({ fromId, toId, amount, balance }) {
+  const container = baseContainer(EMBED_COLOR_SUCCESS)
+    .addTextDisplayComponents(textDisplay(`## 💸 Przelew wykonany`))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(
+      textDisplay(`👤 **Od:** <@${fromId}>`),
+      textDisplay(`👤 **Do:** <@${toId}>`),
+      textDisplay(`💵 **Kwota:** ${money(amount)}`),
+      textDisplay(`💰 **Twoje saldo:** ${money(balance)}`)
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText());
+  return cardPayload(container);
+}
+
+function purchaseResultCard({ item, balance }) {
+  const container = baseContainer(EMBED_COLOR_SUCCESS)
+    .addTextDisplayComponents(textDisplay(`## ✅ Zakup zrealizowany!`))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(
+      textDisplay(`${item.emoji || '🏷️'} **${item.name}**`),
+      textDisplay(`💵 **Zapłacono:** ${money(item.price)}`),
+      textDisplay(`💰 **Pozostałe saldo:** ${money(balance)}`),
+      ...(item.role_id ? [textDisplay(`🎖️ Otrzymałeś rolę <@&${item.role_id}>!`)] : [])
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText());
+  return cardPayload(container);
+}
+
+function finePaymentResultCard({ fine, balance }) {
+  const container = baseContainer(EMBED_COLOR_SUCCESS)
+    .addTextDisplayComponents(textDisplay(`## ✅ Mandat opłacony`))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(
+      textDisplay(`🔖 **Mandat:** #${fine.id}`),
+      textDisplay(`💵 **Zapłacono:** ${money(fine.amount)}`),
+      textDisplay(`💰 **Pozostałe saldo:** ${money(balance)}`)
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText());
+  return cardPayload(container);
+}
+
 module.exports = {
   citizenIdCard,
   vehicleCard,
@@ -363,4 +503,12 @@ module.exports = {
   rpStopCard,
   memberArrivalCard,
   memberDepartureCard,
+  walletCard,
+  leaderboardCard,
+  shopCard,
+  dailyResultCard,
+  workResultCard,
+  payResultCard,
+  purchaseResultCard,
+  finePaymentResultCard,
 };

@@ -10,6 +10,8 @@ const listByCitizenStmt = db.prepare(
 const sumUnpaidStmt = db.prepare(
   "SELECT COALESCE(SUM(amount), 0) AS total FROM fines WHERE citizen_id = ? AND status = 'unpaid'"
 );
+const getByIdStmt = db.prepare('SELECT * FROM fines WHERE id = ?');
+const markPaidStmt = db.prepare("UPDATE fines SET status = 'paid' WHERE id = ? AND status = 'unpaid'");
 
 function issue(guildId, citizenId, issuedBy, amount, reason, ticketId = null) {
   const info = insertStmt.run({ guildId, citizenId, issuedBy, amount, reason, ticketId, now: Date.now() });
@@ -24,4 +26,13 @@ function sumUnpaid(citizenId) {
   return sumUnpaidStmt.get(citizenId).total;
 }
 
-module.exports = { issue, listByCitizen, sumUnpaid };
+function getById(id) {
+  return getByIdStmt.get(id) || null;
+}
+
+function markPaid(id) {
+  const info = markPaidStmt.run(id);
+  return info.changes > 0;
+}
+
+module.exports = { issue, listByCitizen, sumUnpaid, getById, markPaid };
