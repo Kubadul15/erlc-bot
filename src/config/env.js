@@ -20,6 +20,10 @@ const env = {
   verifiedRobloxRoleId: process.env.VERIFIED_ROBLOX_ROLE_ID || null,
   // Kanal, na ktory trafiaja utworzone dowody osobiste. Jesli puste, uzywany jest /config (citizen_log_channel_id).
   citizenLogChannelId: process.env.CITIZEN_LOG_CHANNEL_ID || null,
+
+  // Kanaly na ogloszenia dolaczenia/opuszczenia serwera ("przyloty"/"odloty").
+  arrivalsChannelId: process.env.ARRIVALS_CHANNEL_ID || null,
+  departuresChannelId: process.env.DEPARTURES_CHANNEL_ID || null,
 };
 
 module.exports = env;

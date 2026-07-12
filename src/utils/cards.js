@@ -307,6 +307,46 @@ function rpStopCard({ staffId, durationLabel }) {
   return cardPayload(container);
 }
 
+// ---------- Przyloty / odloty (dolaczenie i opuszczenie serwera) ----------
+
+function memberArrivalCard({ userId, tag, avatarUrl, accountCreatedAt, memberCount }) {
+  const unixSeconds = Math.floor(accountCreatedAt / 1000);
+
+  const container = baseContainer(EMBED_COLOR_SUCCESS)
+    .addSectionComponents(
+      headerSection(
+        [`## 🛬 Ktoś wbił na serwer!`, `👤 <@${userId}> — **${tag}**`],
+        avatarUrl || DEFAULT_AVATAR_URL,
+        'Avatar nowego członka'
+      )
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(
+      textDisplay(`🎂 **Konto założone:** <t:${unixSeconds}:R>`),
+      textDisplay(`👥 **Jesteście teraz:** ${memberCount} członków`)
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText('Witaj na pokładzie!'));
+
+  return cardPayload(container);
+}
+
+function memberDepartureCard({ userId, tag, avatarUrl, memberCount, durationLabel }) {
+  const container = baseContainer(EMBED_COLOR_DANGER)
+    .addSectionComponents(
+      headerSection([`## 🛫 Ktoś wyszedł...`, `👤 **${tag}** (\`${userId}\`)`], avatarUrl || DEFAULT_AVATAR_URL, 'Avatar odchodzącego członka')
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(
+      ...(durationLabel ? [textDisplay(`⏳ **Był z nami:** ${durationLabel}`)] : []),
+      textDisplay(`👥 **Zostało:** ${memberCount} członków`)
+    )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText('Do zobaczenia!'));
+
+  return cardPayload(container);
+}
+
 module.exports = {
   citizenIdCard,
   vehicleCard,
@@ -321,4 +361,6 @@ module.exports = {
   factionInfoCard,
   rpStartCard,
   rpStopCard,
+  memberArrivalCard,
+  memberDepartureCard,
 };

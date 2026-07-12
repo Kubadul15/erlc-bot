@@ -11,6 +11,7 @@ Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). 
 - 📋 **System aplikacji/rekrutacji** — Centrum Rekrutacji (select menu, publikowane komendą admina) do staffu i frakcji, karty decyzji na DM, akceptacja/odrzucenie przez przyciski.
 - 📊 **Statystyki serwera** — kanały głosowe (członkowie, online, wyrobione dowody, otwarte tickety) które same aktualizują nazwę co 10 minut (`/setup-stats-panel`).
 - 🎬 **Sesje RP** — `/rp start [kod]` i `/rp stop` ogłaszają start/koniec sesji roleplay na skonfigurowanym kanale, z pingiem roli i domyślnym kodem serwera.
+- 🛬🛫 **Przyloty / odloty** — automatyczne karty na dołączenie i opuszczenie serwera (avatar, wiek konta, licznik członków, czas spędzony na serwerze), na kanały z `ARRIVALS_CHANNEL_ID` / `DEPARTURES_CHANNEL_ID`.
 
 Stack: **Node.js + discord.js v14 + better-sqlite3**.
 
@@ -64,6 +65,8 @@ Po starcie bota, na serwerze:
 | `LOG_LEVEL` | `error` \| `warn` \| `info` \| `debug` |
 | `VERIFIED_ROBLOX_ROLE_ID` | Rola nadawana automatycznie po weryfikacji konta Roblox (puste = brak) |
 | `CITIZEN_LOG_CHANNEL_ID` | Kanał, na który trafiają utworzone dowody (puste = `/config` → panel obywatela) |
+| `ARRIVALS_CHANNEL_ID` | Kanał „przyloty" — ogłoszenia dołączenia do serwera (puste = wyłączone) |
+| `DEPARTURES_CHANNEL_ID` | Kanał „odloty" — ogłoszenia opuszczenia serwera (puste = wyłączone) |
 
 ## Deployment na Railway
 
