@@ -6,6 +6,6 @@ module.exports = {
   match: (customId) => startsWith(customId, 'economy', 'shop', 'open'),
   async execute(interaction) {
     const items = shopService.listItems(interaction.guildId);
-    await interaction.reply({ ...shopCard(items), ephemeral: true });
+    await interaction.reply(shopCard(items));
   },
 };

@@ -6,6 +6,6 @@ module.exports = {
   data: new SlashCommandBuilder().setName('sklep').setDescription('Otwórz sklep serwera.'),
   async execute(interaction) {
     const items = shopService.listItems(interaction.guildId);
-    await interaction.reply({ ...shopCard(items), ephemeral: true });
+    await interaction.reply(shopCard(items));
   },
 };

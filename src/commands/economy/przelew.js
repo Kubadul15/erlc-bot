@@ -30,9 +30,14 @@ module.exports = {
       return;
     }
 
-    await interaction.reply({
-      ...payResultCard({ fromId: interaction.user.id, toId: target.id, amount, balance: result.senderWallet.balance }),
-      ephemeral: true,
-    });
+    await interaction.reply(
+      payResultCard({
+        fromId: interaction.user.id,
+        toId: target.id,
+        avatarUrl: interaction.user.displayAvatarURL({ size: 128 }),
+        amount,
+        balance: result.senderWallet.balance,
+      })
+    );
   },
 };

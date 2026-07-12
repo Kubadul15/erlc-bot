@@ -18,9 +18,14 @@ module.exports = {
       return;
     }
 
-    await interaction.reply({
-      ...workResultCard({ amount: result.amount, flavorText: result.flavorText, balance: result.wallet.balance }),
-      ephemeral: true,
-    });
+    await interaction.reply(
+      workResultCard({
+        discordId: interaction.user.id,
+        avatarUrl: interaction.user.displayAvatarURL({ size: 128 }),
+        amount: result.amount,
+        flavorText: result.flavorText,
+        balance: result.wallet.balance,
+      })
+    );
   },
 };

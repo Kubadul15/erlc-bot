@@ -19,6 +19,6 @@ module.exports = {
       balance: wallet.balance,
       recentTransactions,
     });
-    await interaction.reply({ ...card, ephemeral: true });
+    await interaction.reply(card);
   },
 };

@@ -18,6 +18,13 @@ module.exports = {
       return;
     }
 
-    await interaction.reply({ ...dailyResultCard({ amount: result.amount, balance: result.wallet.balance }), ephemeral: true });
+    await interaction.reply(
+      dailyResultCard({
+        discordId: interaction.user.id,
+        avatarUrl: interaction.user.displayAvatarURL({ size: 128 }),
+        amount: result.amount,
+        balance: result.wallet.balance,
+      })
+    );
   },
 };

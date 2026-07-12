@@ -11,6 +11,7 @@ const {
   TICKET_CATEGORIES,
   DEFAULT_AVATAR_URL,
   CURRENCY_SYMBOL,
+  ECONOMY_COLOR,
 } = require('../config/constants');
 
 // ---------- Obywatel: dowod osobisty i pojazdy ----------
@@ -349,13 +350,16 @@ function memberDepartureCard({ userId, tag, avatarUrl, memberCount, durationLabe
 }
 
 // ---------- Ekonomia ----------
+// Cala ekonomia dzieli jeden zloty akcent (ECONOMY_COLOR), zeby byla natychmiast
+// rozpoznawalna wsrod reszty kart bota; wyniki pozytywnych akcji (praca, mandat)
+// zostaja przy zielonym, bo to jest "sukces akcji", nie "waluta" sama w sobie.
 
 function money(amount) {
   return `${CURRENCY_SYMBOL}${amount.toLocaleString('pl-PL')}`;
 }
 
 function walletCard({ discordId, avatarUrl, balance, recentTransactions }) {
-  const container = baseContainer(EMBED_COLOR).addSectionComponents(
+  const container = baseContainer(ECONOMY_COLOR).addSectionComponents(
     headerSection(
       [`## 💰 Portfel`, `👤 <@${discordId}>\n**Saldo:** ${money(balance)}`],
       avatarUrl || DEFAULT_AVATAR_URL,
@@ -363,28 +367,35 @@ function walletCard({ discordId, avatarUrl, balance, recentTransactions }) {
     )
   );
 
+  container.addSeparatorComponents(divider());
+
   if (recentTransactions?.length) {
     const lines = recentTransactions
       .slice(0, 5)
       .map((t) => `${t.amount >= 0 ? '🟢 +' : '🔴 '}${money(t.amount)} — ${t.reason || t.type}`)
       .join('\n');
-    container.addSeparatorComponents(divider()).addTextDisplayComponents(textDisplay(`**Ostatnie transakcje**\n${lines}`));
+    container.addTextDisplayComponents(textDisplay(`**📜 Ostatnie transakcje**\n${lines}`)).addSeparatorComponents(divider());
+  } else {
+    container.addTextDisplayComponents(textDisplay('_Brak transakcji — spróbuj `/praca` albo `/nagroda-dzienna`._')).addSeparatorComponents(divider());
   }
 
-  container.addSeparatorComponents(divider()).addTextDisplayComponents(footerText());
+  container.addTextDisplayComponents(footerText());
   return cardPayload(container);
 }
 
 function leaderboardCard(entries) {
   const medals = ['🥇', '🥈', '🥉'];
   const lines = entries.length
-    ? entries.map((w, i) => `${medals[i] || `**${i + 1}.**`} <@${w.discord_id}> — ${money(w.balance)}`).join('\n')
-    : 'Nikt jeszcze nic nie zarobił.';
+    ? entries.map((w, i) => `${medals[i] || `**#${i + 1}**`}  <@${w.discord_id}> — **${money(w.balance)}**`).join('\n')
+    : '_Nikt jeszcze nic nie zarobił — bądź pierwszy!_';
+  const totalPot = entries.reduce((sum, w) => sum + w.balance, 0);
 
-  const container = baseContainer(EMBED_COLOR)
+  const container = baseContainer(ECONOMY_COLOR)
     .addTextDisplayComponents(textDisplay(`## 🏆 Ranking Najbogatszych`))
     .addSeparatorComponents(divider())
     .addTextDisplayComponents(textDisplay(lines))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(textDisplay(`💼 **Suma w obiegu (top ${entries.length}):** ${money(totalPot)}`))
     .addSeparatorComponents(divider())
     .addTextDisplayComponents(footerText());
 
@@ -392,13 +403,15 @@ function leaderboardCard(entries) {
 }
 
 function shopCard(items) {
-  const container = baseContainer(EMBED_COLOR).addTextDisplayComponents(
+  const container = baseContainer(ECONOMY_COLOR).addTextDisplayComponents(
     textDisplay(`## 🛒 Sklep — ${BRAND_NAME}`),
-    textDisplay(items.length ? 'Wybierz produkt poniżej, aby go kupić.' : 'Sklep jest obecnie pusty.')
+    textDisplay(items.length ? `Dostępne produkty: **${items.length}**. Wybierz jeden poniżej, aby go kupić.` : '_Sklep jest obecnie pusty — zajrzyj później!_')
   );
 
   if (items.length) {
-    const lines = items.map((i) => `${i.emoji || '🏷️'} **${i.name}** — ${money(i.price)}${i.description ? `\n> ${i.description}` : ''}`).join('\n\n');
+    const lines = items
+      .map((i, idx) => `**${idx + 1}.** ${i.emoji || '🏷️'} **${i.name}** — 💵 ${money(i.price)}${i.description ? `\n> ${i.description}` : ''}`)
+      .join('\n\n');
     container.addSeparatorComponents(divider()).addTextDisplayComponents(textDisplay(lines));
 
     const select = new StringSelectMenuBuilder()
@@ -419,23 +432,25 @@ function shopCard(items) {
   return cardPayload(container);
 }
 
-function dailyResultCard({ amount, balance }) {
-  const container = baseContainer(EMBED_COLOR_SUCCESS)
-    .addTextDisplayComponents(textDisplay(`## 🎁 Dzienna nagroda odebrana!`))
+function dailyResultCard({ discordId, avatarUrl, amount, balance }) {
+  const container = baseContainer(ECONOMY_COLOR)
+    .addSectionComponents(
+      headerSection([`## 🎁 Dzienna nagroda odebrana!`, `👤 <@${discordId}>`], avatarUrl || DEFAULT_AVATAR_URL, 'Avatar')
+    )
     .addSeparatorComponents(divider())
-    .addTextDisplayComponents(textDisplay(`💵 **Otrzymano:** ${money(amount)}`), textDisplay(`💰 **Nowe saldo:** ${money(balance)}`))
+    .addTextDisplayComponents(textDisplay(`💵 **Otrzymano:** +${money(amount)}`), textDisplay(`💰 **Nowe saldo:** ${money(balance)}`))
     .addSeparatorComponents(divider())
     .addTextDisplayComponents(footerText('Wróć jutro po kolejną!'));
   return cardPayload(container);
 }
 
-function workResultCard({ amount, flavorText, balance }) {
+function workResultCard({ discordId, avatarUrl, amount, flavorText, balance }) {
   const container = baseContainer(EMBED_COLOR_SUCCESS)
-    .addTextDisplayComponents(textDisplay(`## 💼 Praca zakończona!`))
+    .addSectionComponents(headerSection([`## 💼 Praca zakończona!`, `👤 <@${discordId}>`], avatarUrl || DEFAULT_AVATAR_URL, 'Avatar'))
     .addSeparatorComponents(divider())
     .addTextDisplayComponents(
       textDisplay(`> ${flavorText}`),
-      textDisplay(`💵 **Zarobiono:** ${money(amount)}`),
+      textDisplay(`💵 **Zarobiono:** +${money(amount)}`),
       textDisplay(`💰 **Nowe saldo:** ${money(balance)}`)
     )
     .addSeparatorComponents(divider())
@@ -443,24 +458,23 @@ function workResultCard({ amount, flavorText, balance }) {
   return cardPayload(container);
 }
 
-function payResultCard({ fromId, toId, amount, balance }) {
-  const container = baseContainer(EMBED_COLOR_SUCCESS)
-    .addTextDisplayComponents(textDisplay(`## 💸 Przelew wykonany`))
-    .addSeparatorComponents(divider())
-    .addTextDisplayComponents(
-      textDisplay(`👤 **Od:** <@${fromId}>`),
-      textDisplay(`👤 **Do:** <@${toId}>`),
-      textDisplay(`💵 **Kwota:** ${money(amount)}`),
-      textDisplay(`💰 **Twoje saldo:** ${money(balance)}`)
+function payResultCard({ fromId, toId, avatarUrl, amount, balance }) {
+  const container = baseContainer(EMBED_COLOR)
+    .addSectionComponents(
+      headerSection([`## 💸 Przelew wykonany`, `👤 <@${fromId}> ➜ <@${toId}>`], avatarUrl || DEFAULT_AVATAR_URL, 'Avatar nadawcy')
     )
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(textDisplay(`💵 **Kwota:** ${money(amount)}`), textDisplay(`💰 **Saldo nadawcy:** ${money(balance)}`))
     .addSeparatorComponents(divider())
     .addTextDisplayComponents(footerText());
   return cardPayload(container);
 }
 
-function purchaseResultCard({ item, balance }) {
-  const container = baseContainer(EMBED_COLOR_SUCCESS)
-    .addTextDisplayComponents(textDisplay(`## ✅ Zakup zrealizowany!`))
+function purchaseResultCard({ discordId, avatarUrl, item, balance }) {
+  const container = baseContainer(ECONOMY_COLOR)
+    .addSectionComponents(
+      headerSection([`## ✅ Zakup zrealizowany!`, `👤 <@${discordId}>`], avatarUrl || DEFAULT_AVATAR_URL, 'Avatar kupującego')
+    )
     .addSeparatorComponents(divider())
     .addTextDisplayComponents(
       textDisplay(`${item.emoji || '🏷️'} **${item.name}**`),
@@ -469,13 +483,13 @@ function purchaseResultCard({ item, balance }) {
       ...(item.role_id ? [textDisplay(`🎖️ Otrzymałeś rolę <@&${item.role_id}>!`)] : [])
     )
     .addSeparatorComponents(divider())
-    .addTextDisplayComponents(footerText());
+    .addTextDisplayComponents(footerText('Dziękujemy za zakupy!'));
   return cardPayload(container);
 }
 
-function finePaymentResultCard({ fine, balance }) {
+function finePaymentResultCard({ discordId, avatarUrl, fine, balance }) {
   const container = baseContainer(EMBED_COLOR_SUCCESS)
-    .addTextDisplayComponents(textDisplay(`## ✅ Mandat opłacony`))
+    .addSectionComponents(headerSection([`## ✅ Mandat opłacony`, `👤 <@${discordId}>`], avatarUrl || DEFAULT_AVATAR_URL, 'Avatar'))
     .addSeparatorComponents(divider())
     .addTextDisplayComponents(
       textDisplay(`🔖 **Mandat:** #${fine.id}`),

@@ -25,6 +25,13 @@ module.exports = {
     }
 
     const wallet = economyService.getWallet(interaction.guildId, interaction.user.id);
-    await interaction.reply({ ...finePaymentResultCard({ fine: result.fine, balance: wallet.balance }), ephemeral: true });
+    await interaction.reply(
+      finePaymentResultCard({
+        discordId: interaction.user.id,
+        avatarUrl: interaction.user.displayAvatarURL({ size: 128 }),
+        fine: result.fine,
+        balance: wallet.balance,
+      })
+    );
   },
 };
