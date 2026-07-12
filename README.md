@@ -1,6 +1,6 @@
 # Vortex ERLC — Bot Discord
 
-Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). Cały interfejs — dowody, pojazdy, tickety, moderacja, frakcje, aplikacje — zbudowany jest na Discord **Components V2** (kontenery, separatory, sekcje z miniaturką), nie na zwykłych embedach. Zawiera:
+Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). Cały interfejs — dowody, pojazdy, tickety, moderacja, frakcje, ekonomia — zbudowany jest na Discord **Components V2** (kontenery, separatory, sekcje z miniaturką), nie na zwykłych embedach. Zawiera:
 
 - 🏛️ **Panel Obywatela** — dowody osobiste, rejestracja pojazdów, podgląd własnych danych (select menu + modale + karty V2). Wyrobienie dowodu nie wymaga powiązania Roblox — to osobny, niezależny krok.
 - 🔗 **Panel weryfikacji Roblox** (`/setup-roblox-panel`) — osobny panel: bot sprawdza w Roblox API, czy podana nazwa istnieje, pokazuje dane konta (avatar, nick) i wymaga wklejenia losowego kodu w opisie profilu. Po weryfikacji nadaje rolę skonfigurowaną w `VERIFIED_ROBLOX_ROLE_ID`.
@@ -8,7 +8,6 @@ Bot Discord dla prywatnego serwera **Vortex ERLC** (roleplay ERLC na Robloxie). 
 - 💰 **Mandaty i rejestr karny** powiązane z dowodem osobistym.
 - 🛡️ **System frakcji/prac** — domyślnie Policja, Straż Pożarna, Straż Miejska, GDDKiA, Pogotowie Ratunkowe (`/setup-faction-panel` zasiewa je automatycznie), plus dowolne własne frakcje. Publiczny **Panel Frakcji** do przeglądania, osobny panel zarządzania członkami (rangi, awanse/degradacje) dla dowódców.
 - ⚖️ **Panel moderacji** — warn/mute/unmute/ban/unban/kick z historią (`/modlog`).
-- 📋 **System aplikacji/rekrutacji** — Centrum Rekrutacji (select menu, publikowane komendą admina) do staffu i frakcji, karty decyzji na DM, akceptacja/odrzucenie przez przyciski.
 - 📊 **Statystyki serwera** — kanały głosowe (członkowie, online, wyrobione dowody, otwarte tickety) które same aktualizują nazwę co 10 minut (`/setup-stats-panel`).
 - 🎬 **Sesje RP** — `/rp start [kod]` i `/rp stop` ogłaszają start/koniec sesji roleplay na skonfigurowanym kanale, z pingiem roli i domyślnym kodem serwera.
 - 🛬🛫 **Przyloty / odloty** — automatyczne karty na dołączenie i opuszczenie serwera (avatar, wiek konta, licznik członków, czas spędzony na serwerze), na kanały z `ARRIVALS_CHANNEL_ID` / `DEPARTURES_CHANNEL_ID`.
@@ -48,12 +47,11 @@ Po starcie bota, na serwerze:
 1. `/setup-citizen-panel` — publikuje Panel Obywatela.
 2. `/setup-roblox-panel` — publikuje osobny panel weryfikacji konta Roblox.
 3. `/setup-ticket-panel` — publikuje panel ticketów.
-4. `/setup-application-panel` — publikuje Centrum Rekrutacji (select menu Staff/Frakcja, klik → dopiero wtedy otwiera się formularz).
-5. `/setup-faction-panel` — zasiewa domyślne frakcje (Policja, Straż Pożarna, Straż Miejska, GDDKiA, Pogotowie Ratunkowe) i publikuje publiczny Panel Frakcji.
-6. `/setup-stats-panel` — tworzy kanały głosowe ze statystykami serwera (aktualizują się same co 10 minut).
-7. `/sklep-admin dodaj nazwa:<...> cena:<...>` — dodaj pierwsze produkty do sklepu (domyślnie każdy tworzy nową rolę na Discordzie), potem `/setup-shop-panel` — publikuje panel sklepu.
-8. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**. Skonfiguruj `rp_announce_channel_id`, aby `/rp start`/`/rp stop` miały gdzie wysyłać ogłoszenia.
-9. Opcjonalnie ustaw `VERIFIED_ROBLOX_ROLE_ID` i `CITIZEN_LOG_CHANNEL_ID` w zmiennych środowiskowych (patrz niżej) — te dwa ustawienia świadomie żyją w env, nie w `/config`, żeby nie trzeba było ich ustawiać ponownie po każdym redeployu.
+4. `/setup-faction-panel` — zasiewa domyślne frakcje (Policja, Straż Pożarna, Straż Miejska, GDDKiA, Pogotowie Ratunkowe) i publikuje publiczny Panel Frakcji.
+5. `/setup-stats-panel` — tworzy kanały głosowe ze statystykami serwera (aktualizują się same co 10 minut).
+6. `/sklep-admin dodaj nazwa:<...> cena:<...>` — dodaj pierwsze produkty do sklepu (domyślnie każdy tworzy nową rolę na Discordzie), potem `/setup-shop-panel` — publikuje panel sklepu.
+7. `/config set-role key:<...>` i `/config set-channel key:<...>` — skonfiguruj role i kanały (użyj `/config view`, aby zobaczyć aktualny stan). Bez skonfigurowanej `role_admin`/`role_staff` komendy administracyjne działają dla każdego z natywnym uprawnieniem **Manage Server**. Skonfiguruj `rp_announce_channel_id`, aby `/rp start`/`/rp stop` miały gdzie wysyłać ogłoszenia.
+8. Opcjonalnie ustaw `VERIFIED_ROBLOX_ROLE_ID` i `CITIZEN_LOG_CHANNEL_ID` w zmiennych środowiskowych (patrz niżej) — te dwa ustawienia świadomie żyją w env, nie w `/config`, żeby nie trzeba było ich ustawiać ponownie po każdym redeployu.
 
 ## Zmienne środowiskowe
 
@@ -90,7 +88,7 @@ src/
   deploy-commands.js     # rejestracja slash commands
   config/                # env, stałe marki, definicje pól modali
   database/               # połączenie SQLite, migracje, repozytoria
-  services/               # logika biznesowa (citizen, vehicle, ticket, faction, moderation, application...)
+  services/               # logika biznesowa (citizen, vehicle, ticket, faction, moderation, economy...)
   commands/                # slash commands, pogrupowane wg kategorii
   interactions/            # handlery przycisków / select menu / modali
   events/                  # eventy klienta discord.js
@@ -105,7 +103,6 @@ src/
 | `/setup-citizen-panel` | Publikuje Panel Obywatela |
 | `/setup-roblox-panel` | Publikuje panel weryfikacji konta Roblox |
 | `/setup-ticket-panel` | Publikuje panel ticketów |
-| `/setup-application-panel` | Publikuje Centrum Rekrutacji |
 | `/setup-faction-panel` | Zasiewa domyślne frakcje i publikuje Panel Frakcji |
 | `/setup-stats-panel` | Tworzy samoaktualizujące się kanały statystyk |
 | `/setup-shop-panel` | Publikuje panel sklepu |
@@ -115,7 +112,6 @@ src/
 | `/rp start`, `/rp stop` | Ogłoszenie startu/końca sesji roleplay |
 | `/frakcja create/delete/info/ranga/czlonek` | Zarządzanie frakcjami |
 | `/frakcja-panel` | Panel zarządzania członkami frakcji |
-| `/aplikacja-staff`, `/aplikacja-frakcja` | Aplikacje/rekrutacja |
 | `/saldo`, `/nagroda-dzienna`, `/praca`, `/przelew`, `/ranking`, `/sklep` | Ekonomia |
 | `/ekonomia dodaj/usun` | Zarządzanie saldem (staff) |
 | `/sklep-admin dodaj/usun` | Zarządzanie katalogiem sklepu (admin) |

@@ -46,11 +46,6 @@ module.exports = {
 
   DIVIDER: '◢▰▰▰▰▰▰▰ • ▰▰▰▰▰▰▰◣',
 
-  APPLICATION_TYPE_LABELS: {
-    staff: 'Staff',
-    faction: 'Frakcja',
-  },
-
   STAT_TYPES: {
     members: { label: 'Członkowie', emoji: '👥' },
     online: { label: 'Online', emoji: '🟢' },

@@ -26,12 +26,6 @@ function isStaff(member) {
   return memberHasConfiguredRole(member, member.guild.id, 'role_staff');
 }
 
-/** Staff odpowiedzialny za rozpatrywanie aplikacji. */
-function isApplicationStaff(member) {
-  if (isStaff(member)) return true;
-  return memberHasConfiguredRole(member, member.guild.id, 'role_application_staff');
-}
-
 /** Uprawniony do zarzadzania dana frakcja (awanse/degradacje/wyrzucenia). */
 function canManageFaction(member, faction) {
   if (isAdmin(member)) return true;
@@ -45,4 +39,4 @@ function hasRole(member, key) {
   return memberHasConfiguredRole(member, member.guild.id, key);
 }
 
-module.exports = { isAdmin, isStaff, isApplicationStaff, canManageFaction, hasRole };
+module.exports = { isAdmin, isStaff, canManageFaction, hasRole };

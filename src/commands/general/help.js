@@ -27,11 +27,6 @@ module.exports = {
           value: 'Użyj Panelu Frakcji na kanale, aby zobaczyć informacje o Policji, Straży Pożarnej, Straży Miejskiej, GDDKiA i Pogotowiu Ratunkowym.',
         },
         {
-          name: '📋 Aplikacje',
-          value:
-            'Użyj Centrum Rekrutacji na kanale (wybierz Staff/Frakcja z select menu), albo bezpośrednio: `/aplikacja-staff`, `/aplikacja-frakcja`.',
-        },
-        {
           name: '💰 Ekonomia',
           value:
             '`/saldo`, `/nagroda-dzienna`, `/praca`, `/przelew`, `/ranking`\n`/sklep` albo panel sklepu na kanale — kup produkty, niektóre nadają rangi\n`/moje-mandaty`, `/zaplac-mandat` — opłać mandat z portfela',
@@ -44,7 +39,7 @@ module.exports = {
         {
           name: '⚙️ Administracja',
           value:
-            '`/config`, `/setup-citizen-panel`, `/setup-roblox-panel`, `/setup-ticket-panel`, `/setup-application-panel`, `/setup-faction-panel`, `/setup-stats-panel`, `/setup-shop-panel`, `/sklep-admin dodaj/usun`',
+            '`/config`, `/setup-citizen-panel`, `/setup-roblox-panel`, `/setup-ticket-panel`, `/setup-faction-panel`, `/setup-stats-panel`, `/setup-shop-panel`, `/sklep-admin dodaj/usun`',
         },
       ],
     });
