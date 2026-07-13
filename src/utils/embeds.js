@@ -16,11 +16,6 @@ function brandEmbed({ title, description, color, fields, thumbnail, footer } = {
   return embed;
 }
 
-function robloxProfileLink(username) {
-  const encoded = encodeURIComponent(username);
-  return `[${username}](https://www.roblox.com/search/users?keyword=${encoded})`;
-}
-
 function errorEmbed(message) {
   return brandEmbed({ description: `${EMOJI.error} ${message}`, color: EMBED_COLOR_DANGER });
 }
@@ -31,7 +26,6 @@ function successEmbed(message) {
 
 module.exports = {
   brandEmbed,
-  robloxProfileLink,
   errorEmbed,
   successEmbed,
 };

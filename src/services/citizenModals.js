@@ -1,20 +1,6 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const { build } = require('../utils/customId');
 
-async function showLinkModal(interaction) {
-  const modal = new ModalBuilder().setCustomId(build('citizen', 'link', 'modal')).setTitle('Powiąż konto Roblox');
-
-  const usernameInput = new TextInputBuilder()
-    .setCustomId('roblox_username')
-    .setLabel('Nazwa użytkownika Roblox')
-    .setStyle(TextInputStyle.Short)
-    .setMaxLength(50)
-    .setRequired(true);
-
-  modal.addComponents(new ActionRowBuilder().addComponents(usernameInput));
-  await interaction.showModal(modal);
-}
-
 async function showIdModal(interaction) {
   const modal = new ModalBuilder().setCustomId(build('citizen', 'id', 'modal')).setTitle('Dowód Osobisty — Vortex ERLC');
 
@@ -98,4 +84,4 @@ async function showVehicleModal(interaction) {
   await interaction.showModal(modal);
 }
 
-module.exports = { showLinkModal, showIdModal, showVehicleModal };
+module.exports = { showIdModal, showVehicleModal };

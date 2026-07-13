@@ -5,7 +5,7 @@ const CONFIG_KEYS = {
   channels: {
     citizen_panel_channel_id: 'Kanał panelu obywatela',
     citizen_log_channel_id: 'Kanał logów dowodów (nadpisywany przez env CITIZEN_LOG_CHANNEL_ID)',
-    roblox_panel_channel_id: 'Kanał panelu weryfikacji Roblox',
+    verify_panel_channel_id: 'Kanał panelu weryfikacji',
     vehicle_log_channel_id: 'Kanał logów pojazdów',
     ticket_panel_channel_id: 'Kanał panelu ticketów',
     ticket_parent_category_id: 'Kategoria kanałów ticketów',

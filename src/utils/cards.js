@@ -1,6 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, UserSelectMenuBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { divider, textDisplay, footerText, headerSection, mediaGallery, baseContainer, cardPayload, parseHexColor } = require('./cardKit');
-const { robloxProfileLink } = require('./embeds');
 const { build } = require('./customId');
 const {
   BRAND_NAME,
@@ -16,14 +15,11 @@ const {
 
 // ---------- Obywatel: dowod osobisty i pojazdy ----------
 
-function citizenIdCard({ citizen, discordId, robloxUsername, avatarUrl, summary }) {
+function citizenIdCard({ citizen, discordId, avatarUrl, summary }) {
   const container = baseContainer(EMBED_COLOR)
     .addSectionComponents(
       headerSection(
-        [
-          `## 🪪 Dowód Osobisty — ${BRAND_NAME}`,
-          `👤 Posiadacz: <@${discordId}>\n🎮 Roblox: ${robloxUsername ? robloxProfileLink(robloxUsername) : 'brak'}`,
-        ],
+        [`## 🪪 Dowód Osobisty — ${BRAND_NAME}`, `👤 Posiadacz: <@${discordId}>`],
         avatarUrl || DEFAULT_AVATAR_URL,
         'Avatar posiadacza'
       )
@@ -77,49 +73,36 @@ function vehicleCard({ vehicle, discordId }) {
   return cardPayload(container);
 }
 
-// ---------- Powiazanie konta Roblox ----------
+// ---------- Weryfikacja (captcha + pseudonim) ----------
 
-function robloxNotLinkedCard(actionRow) {
+function verificationCaptchaCard({ code, actionRow }) {
+  const spaced = code.split('').join(' ');
   const container = baseContainer(EMBED_COLOR)
     .addTextDisplayComponents(
-      textDisplay(`## 🔗 Wymagane powiązanie konta Roblox`),
+      textDisplay(`## ✅ Weryfikacja — ${BRAND_NAME}`),
       textDisplay(
-        `${EMOJI.info} Zanim wyrobisz dowód, musisz powiązać i zweryfikować swoją nazwę użytkownika Roblox.\nKliknij przycisk poniżej albo użyj komendy \`/link-roblox\`.`
+        `${EMOJI.info} Przepisz poniższy kod oraz podaj pseudonim, który ma zostać ustawiony jako Twój nick na serwerze.`
       )
     )
     .addSeparatorComponents(divider())
-    .addTextDisplayComponents(footerText())
-    .addActionRowComponents(actionRow);
+    .addTextDisplayComponents(textDisplay(`Kod weryfikacyjny:\n\`\`\`${spaced}\`\`\``))
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText());
+
+  if (actionRow) container.addActionRowComponents(actionRow);
 
   return cardPayload(container);
 }
 
-function robloxLinkCard({ resolved, avatarUrl, code, verified, actionRow }) {
-  const container = baseContainer(verified ? EMBED_COLOR_SUCCESS : EMBED_COLOR)
-    .addSectionComponents(
-      headerSection(
-        [
-          `## 🔗 Powiązanie konta Roblox`,
-          `👤 **Nazwa użytkownika:** ${resolved.name}\n🏷️ **Nazwa wyświetlana:** ${resolved.displayName || resolved.name}`,
-        ],
-        avatarUrl || DEFAULT_AVATAR_URL,
-        'Avatar Roblox'
-      )
+function verificationSuccessCard({ nickname, actionRow }) {
+  const container = baseContainer(EMBED_COLOR_SUCCESS)
+    .addTextDisplayComponents(
+      textDisplay(`## ✅ Weryfikacja zakończona`),
+      textDisplay(`${EMOJI.success} Zweryfikowano pomyślnie. Twój nick ustawiono na **${nickname}**.`)
     )
-    .addSeparatorComponents(divider());
+    .addSeparatorComponents(divider())
+    .addTextDisplayComponents(footerText());
 
-  if (verified) {
-    container.addTextDisplayComponents(textDisplay(`${EMOJI.success} Konto zweryfikowane pomyślnie. Możesz kontynuować.`));
-  } else {
-    container.addTextDisplayComponents(
-      textDisplay(
-        `Aby potwierdzić, że to Twoje konto, wklej poniższy kod do sekcji **"O mnie"** na swoim profilu Roblox, zapisz zmiany, a następnie kliknij **Sprawdź ponownie**.`
-      ),
-      textDisplay(`Kod weryfikacyjny:\n\`\`\`${code}\`\`\``)
-    );
-  }
-
-  container.addSeparatorComponents(divider()).addTextDisplayComponents(footerText());
   if (actionRow) container.addActionRowComponents(actionRow);
 
   return cardPayload(container);
@@ -504,8 +487,8 @@ function finePaymentResultCard({ discordId, avatarUrl, fine, balance }) {
 module.exports = {
   citizenIdCard,
   vehicleCard,
-  robloxNotLinkedCard,
-  robloxLinkCard,
+  verificationCaptchaCard,
+  verificationSuccessCard,
   ticketIntroCard,
   ticketClosedCard,
   ticketReopenedCard,

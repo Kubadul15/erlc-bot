@@ -14,9 +14,8 @@ module.exports = {
           value: 'Użyj Panelu Obywatela na kanale, aby wyrobić dowód, zarejestrować pojazd i sprawdzić swoje dane.',
         },
         {
-          name: '🔗 Weryfikacja Roblox',
-          value:
-            '`/link-roblox` albo Panel Weryfikacji Roblox na kanale — osobny, opcjonalny krok niepowiązany z wyrobieniem dowodu.',
+          name: '✅ Weryfikacja',
+          value: 'Panel Weryfikacji na kanale — przepisz kod i podaj pseudonim, który zostanie ustawiony jako Twój nick.',
         },
         {
           name: '🎫 Tickety',
@@ -39,7 +38,7 @@ module.exports = {
         {
           name: '⚙️ Administracja',
           value:
-            '`/config`, `/setup-citizen-panel`, `/setup-roblox-panel`, `/setup-ticket-panel`, `/setup-faction-panel`, `/setup-stats-panel`, `/setup-shop-panel`, `/sklep-admin dodaj/usun`',
+            '`/config`, `/setup-citizen-panel`, `/setup-verify-panel`, `/setup-ticket-panel`, `/setup-faction-panel`, `/setup-stats-panel`, `/setup-shop-panel`, `/sklep-admin dodaj/usun`',
         },
       ],
     });

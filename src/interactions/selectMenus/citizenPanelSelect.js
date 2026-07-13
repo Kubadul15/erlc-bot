@@ -35,11 +35,9 @@ module.exports = {
         await interaction.reply({ embeds: [errorEmbed('Nie posiadasz dowodu osobistego.')], ephemeral: true });
         return;
       }
-      const roblox = citizenService.getVerifiedRoblox(interaction.guildId, interaction.user.id);
       const card = citizenIdCard({
         citizen: summary.citizen,
         discordId: interaction.user.id,
-        robloxUsername: roblox?.roblox_username,
         avatarUrl: interaction.user.displayAvatarURL({ size: 128 }),
         summary,
       });
