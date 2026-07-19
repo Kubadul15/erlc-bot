@@ -7,6 +7,13 @@ const logger = require('../utils/logger');
 
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // bez znakow latwych do pomylenia (0/O, 1/I)
 
+// Na tym konkretnym serwerze rola zweryfikowana ma byc zawsze ta - niezaleznie od tego,
+// co ustawiono w VERIFIED_ROLE_ID (env). Nadpisuje env tylko dla tego jednego guildId.
+const VERIFIED_ROLE_OVERRIDE = {
+  guildId: '1524518836311822376',
+  roleId: '1524518836366344338',
+};
+
 function generateCode() {
   let code = '';
   for (let i = 0; i < 6; i += 1) {
@@ -40,12 +47,13 @@ function continueToIdButtonRow() {
   );
 }
 
-/** Nadaje role skonfigurowana przez VERIFIED_ROLE_ID (jesli ustawiona w env). */
+/** Nadaje role zweryfikowana: dla VERIFIED_ROLE_OVERRIDE.guildId zawsze uzywa jej roleId (ignorujac env), w przeciwnym razie VERIFIED_ROLE_ID z env. */
 async function grantVerifiedRole(guild, discordId) {
-  if (!env.verifiedRoleId) return;
+  const roleId = guild.id === VERIFIED_ROLE_OVERRIDE.guildId ? VERIFIED_ROLE_OVERRIDE.roleId : env.verifiedRoleId;
+  if (!roleId) return;
   try {
     const member = await guild.members.fetch(discordId);
-    await member.roles.add(env.verifiedRoleId);
+    await member.roles.add(roleId);
   } catch (err) {
     logger.warn(`Nie udało się nadać roli po weryfikacji (${discordId}):`, err.message);
   }
